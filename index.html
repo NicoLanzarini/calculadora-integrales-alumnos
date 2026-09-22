@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora de integrales dobles y triples — AM2</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#EEF2F3; --bg2:#E4EAEC; --panel:#FFFFFF; --ink:#17222B; --ink-dim:#4E5C66;
+  --line:#C7D2D6; --grid-line:rgba(46,110,158,0.07);
+  --accent:#2E6E9E; --accent-ink:#FFFFFF;
+  --warm:#B8762E;
+  --rect:#2E6E9E; --polar:#B8762E; --cil:#1B7A72; --esf:#6B4F9E;
+  --ok:#2E7D4F; --err:#B33F3F;
+  --radius:7px;
+  --mono:'IBM Plex Mono',ui-monospace,Consolas,monospace;
+  --sans:'Space Grotesk',system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#111820; --bg2:#0C1116; --panel:#161F29; --ink:#E4EAEE; --ink-dim:#9AABB6;
+    --line:#2A3844; --grid-line:rgba(122,178,224,0.06);
+    --accent:#6FA8D8; --accent-ink:#0B1720;
+    --warm:#E0A868;
+    --rect:#6FA8D8; --polar:#E0A868; --cil:#5FC9BC; --esf:#B29BE0;
+    --ok:#63C793; --err:#E28787;
+  }
+}
+:root[data-theme="light"]{
+  --bg:#EEF2F3; --bg2:#E4EAEC; --panel:#FFFFFF; --ink:#17222B; --ink-dim:#4E5C66;
+  --line:#C7D2D6; --grid-line:rgba(46,110,158,0.07);
+  --accent:#2E6E9E; --accent-ink:#FFFFFF; --warm:#B8762E;
+  --rect:#2E6E9E; --polar:#B8762E; --cil:#1B7A72; --esf:#6B4F9E;
+}
+:root[data-theme="dark"]{
+  --bg:#111820; --bg2:#0C1116; --panel:#161F29; --ink:#E4EAEE; --ink-dim:#9AABB6;
+  --line:#2A3844; --grid-line:rgba(122,178,224,0.06);
+  --accent:#6FA8D8; --accent-ink:#0B1720; --warm:#E0A868;
+  --rect:#6FA8D8; --polar:#E0A868; --cil:#5FC9BC; --esf:#B29BE0;
+}
+.vizctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:10px;}
+.vizctl .chk{display:flex;align-items:center;gap:5px;font-size:0.82rem;color:var(--ink-dim);
+  border:1px solid var(--line);border-radius:6px;padding:5px 9px;cursor:pointer;}
+.keypad{display:flex;flex-direction:column;gap:6px;margin:-2px 0 14px;}
+.kprow{display:flex;flex-wrap:wrap;gap:5px;}
+.kptabs{display:flex;flex-wrap:wrap;gap:4px;border-bottom:1px solid var(--line);padding-bottom:5px;}
+.kptabs button{font-family:var(--sans);font-size:0.78rem;padding:4px 9px;border:0;background:transparent;
+  color:var(--ink-dim);cursor:pointer;border-radius:5px;}
+.kptabs button.on{background:var(--accent);color:var(--accent-ink);font-weight:600;}
+.keypad button{font-family:var(--mono);font-size:0.86rem;padding:7px 10px;min-width:38px;
+  border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);
+  cursor:pointer;line-height:1.1;}
+.keypad button:active{background:var(--accent);color:var(--accent-ink);}
+.keypad button.kvar{border-color:var(--accent);color:var(--accent);font-weight:600;}
+.keypad button.kdel{margin-left:auto;border-color:var(--err);color:var(--err);}
+.sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+.sg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;}
+.sg3 input,.sg4 input{width:100%;}
+.sgrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:3px 0;
+  font-size:0.88rem;color:var(--ink-dim);}
+.sgrow b{font-family:var(--mono);font-size:1rem;color:var(--ink);}
+.sgline{height:1px;background:var(--line);margin:8px 0;}
+.sgverdict{margin-top:9px;font-size:0.85rem;line-height:1.5;padding:9px 11px;border-radius:6px;}
+.sgverdict.ok{border-left:2px solid var(--ok);background:color-mix(in srgb, var(--ok) 10%, var(--panel));}
+.sgverdict.bad{border-left:2px solid var(--err);background:color-mix(in srgb, var(--err) 10%, var(--panel));}
+.fdom{width:100%;}
+.grpsel{display:flex;gap:0;border:1px solid var(--line);border-radius:7px;overflow:hidden;width:100%;}
+.grpsel button{flex:1;padding:10px 6px;border:0;background:transparent;color:var(--ink-dim);
+  font-family:var(--sans);font-size:0.92rem;font-weight:500;cursor:pointer;letter-spacing:0.01em;}
+.grpsel button + button{border-left:1px solid var(--line);}
+.grpsel button.on{background:var(--accent);color:var(--accent-ink);font-weight:600;}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size:26px 26px;
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+.wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
+header.top{padding:6px 2px 16px;border-bottom:1px solid var(--line);margin-bottom:16px;}
+h1{font-size:1.32rem;font-weight:700;margin:0 0 4px;letter-spacing:-0.01em;}
+.sub{color:var(--ink-dim);font-size:0.86rem;margin:0;max-width:60ch;}
+nav.tabs{display:flex;gap:6px;margin-top:16px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+nav.tabs button{
+  flex:0 0 auto;
+  background:transparent;border:1px solid var(--line);color:var(--ink-dim);
+  font-family:var(--sans);font-size:0.82rem;font-weight:500;
+  padding:8px 13px;border-radius:var(--radius);cursor:pointer;white-space:nowrap;
+  transition:background .15s,color .15s,border-color .15s;
+}
+nav.tabs button.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+nav.tabs button:not(.active):hover{border-color:var(--accent);color:var(--ink);}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 18px;margin-bottom:14px;}
+.panel h2{font-size:0.98rem;font-weight:600;margin:0 0 10px;}
+.panel h3{font-size:0.86rem;font-weight:600;margin:16px 0 6px;color:var(--ink-dim);text-transform:none;}
+.tabpanel{display:none;}
+.tabpanel.active{display:block;}
+
+label{display:block;font-size:0.78rem;color:var(--ink-dim);margin-bottom:4px;}
+select, input[type=text]{
+  width:100%;background:var(--bg);border:1px solid var(--line);color:var(--ink);
+  font-family:var(--mono);font-size:0.92rem;padding:8px 9px;border-radius:6px;
+}
+select{font-family:var(--sans);}
+select:focus, input:focus{outline:2px solid var(--accent);outline-offset:1px;}
+.field{margin-bottom:12px;}
+.bounds-row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px;padding:10px;background:var(--bg);border:1px solid var(--line);border-radius:6px;}
+.bounds-row .varname{font-family:var(--mono);font-weight:600;font-size:1.02rem;min-width:26px;}
+.bounds-row .pair{display:flex;gap:6px;align-items:center;flex:1;min-width:180px;}
+.bounds-row .pair input{width:100%;}
+.bounds-row .dep{width:100%;font-size:0.72rem;color:var(--ink-dim);margin-top:4px;}
+
+button.action{
+  background:var(--accent);color:var(--accent-ink);border:none;font-family:var(--sans);
+  font-weight:600;font-size:0.88rem;padding:10px 18px;border-radius:6px;cursor:pointer;
+}
+button.action:hover{filter:brightness(1.08);}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink);font-family:var(--sans);
+  font-size:0.78rem;padding:6px 11px;border-radius:6px;cursor:pointer;}
+button.ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+.result{margin-top:14px;padding:13px 14px;border-radius:6px;border:1px solid var(--line);background:var(--bg);}
+.result .num{font-family:var(--mono);font-size:1.5rem;font-weight:600;color:var(--warm);}
+.result .notation{font-family:var(--mono);font-size:0.82rem;color:var(--ink-dim);margin-top:6px;word-break:break-word;}
+.result.err{border-color:var(--err);}
+.result.err .num{color:var(--err);font-size:0.95rem;font-weight:500;}
+
+.chip{display:inline-block;font-size:0.68rem;font-weight:600;padding:2px 7px;border-radius:20px;color:#fff;letter-spacing:.01em;}
+.chip-rect{background:var(--rect);} .chip-polar{background:var(--polar);}
+.chip-cil{background:var(--cil);} .chip-esf{background:var(--esf);}
+
+.help{font-size:0.76rem;color:var(--ink-dim);margin-top:10px;border-top:1px dashed var(--line);padding-top:10px;}
+.help code{font-family:var(--mono);background:var(--bg2);padding:1px 5px;border-radius:4px;}
+
+sup{font-size:0.72em;} sub{font-size:0.7em;}
+.math{font-family:var(--mono);}
+
+#plot3d{width:100%;height:420px;border:1px solid var(--line);border-radius:6px;background:var(--bg);}
+.viz-note{font-size:0.78rem;color:var(--ink-dim);margin-top:8px;}
+
+.ex-card{border:1px solid var(--line);border-radius:6px;margin-bottom:9px;background:var(--bg);overflow:hidden;}
+.ex-head{display:flex;align-items:center;gap:10px;padding:11px 13px;cursor:pointer;}
+.ex-num{font-family:var(--mono);color:var(--ink-dim);font-size:0.8rem;min-width:22px;}
+.ex-title{flex:1;font-size:0.88rem;font-weight:500;}
+.ex-ans{font-family:var(--mono);color:var(--warm);font-size:0.84rem;white-space:nowrap;}
+.ex-body{display:none;padding:0 13px 14px;border-top:1px solid var(--line);}
+.ex-card.open .ex-body{display:block;}
+.ex-body .notation{font-family:var(--mono);font-size:0.85rem;background:var(--panel);border:1px solid var(--line);
+  padding:9px 10px;border-radius:6px;margin:10px 0;overflow-x:auto;}
+.ex-body ol{margin:8px 0;padding-left:20px;font-size:0.85rem;}
+.ex-body ol li{margin-bottom:5px;}
+.ex-body .final{font-size:0.9rem;margin-top:8px;}
+.ex-body .final b{color:var(--warm);}
+
+.an-block{margin-bottom:18px;}
+.an-block h3{font-size:0.92rem;font-weight:600;margin:0 0 6px;}
+.an-block p{font-size:0.86rem;margin:5px 0;}
+.an-block ul{font-size:0.86rem;padding-left:20px;margin:6px 0;}
+
+footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:18px;}
+@media (max-width:480px){
+  .bounds-row .varname{min-width:20px;}
+  h1{font-size:1.15rem;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>📐 Calculadora de integrales dobles y triples</h1>
+    <p class="sub">Verificación numérica para los tipos de integral del TP3 (Unidad 3 — Integrales múltiples). Resolvé a mano y comparado acá.</p>
+    <nav class="tabs">
+      <button data-tab="calc" class="active">Calculadora</button>
+      <button data-tab="viz">Visualización 3D</button>
+      <button data-tab="fields">Campos vectoriales</button>
+      <button data-tab="examples">Ejemplos (30)</button>
+      <button data-tab="surfaces">Stokes y Gauss</button>
+    </nav>
+  </header>
+
+  <!-- ===================== TAB: CALCULADORA ===================== -->
+  <section id="tab-calc" class="tabpanel active">
+    <div class="panel">
+      <h2>Tipo de integral <span id="modeChip"></span></h2>
+      <div class="field">
+        <label>Tipo</label>
+        <div class="grpsel">
+          <button type="button" data-grp="doble" id="grpDoble">∬ &nbsp;Dobles</button>
+          <button type="button" data-grp="triple" id="grpTriple">∭ &nbsp;Triples</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="modeSelect">Modo</label>
+        <select id="modeSelect">
+          <optgroup label="Dobles">
+            <option value="A">Rectángulo — ∬f(x,y) dA</option>
+            <option value="B">Región general, tipo I — dy dx</option>
+            <option value="C">Región general, tipo II — dx dy</option>
+            <option value="D">Polares — f(r,θ)·r dr dθ</option>
+          </optgroup>
+          <optgroup label="Triples">
+            <option value="E">Caja — ∭f(x,y,z) dV</option>
+            <option value="F">Región general — dz dy dx</option>
+            <option value="G1">Cilíndricas — dz·r dr dθ (z interior)</option>
+            <option value="G2">Cilíndricas — dr·r dz dθ (r interior)</option>
+            <option value="H">Esféricas — dρ dφ dθ (ρ²senφ)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="field">
+        <label id="fLabel" for="fExpr">Integrando</label>
+        <input type="text" id="fExpr" value="x*y" spellcheck="false" autocapitalize="off">
+      </div>
+
+      <div class="keypad" id="keypad"></div>
+
+      <div class="field" id="orderField" style="display:none">
+        <label for="orderSelect">Orden de integración</label>
+        <select id="orderSelect">
+          <option value="xyz">dz dy dx &nbsp;— exterior x, medio y, interior z</option>
+          <option value="xzy">dy dz dx &nbsp;— exterior x, medio z, interior y</option>
+          <option value="yxz">dz dx dy &nbsp;— exterior y, medio x, interior z</option>
+          <option value="yzx">dx dz dy &nbsp;— exterior y, medio z, interior x</option>
+          <option value="zxy">dy dx dz &nbsp;— exterior z, medio x, interior y</option>
+          <option value="zyx">dx dy dz &nbsp;— exterior z, medio y, interior x</option>
+        </select>
+        <div class="dep" style="margin-top:6px">Cambiar el orden NO reescribe los límites: esa conversión es el trabajo que tenés que hacer vos. Acá sólo se reordenan los casilleros.</div>
+      </div>
+
+      <div id="boundsHost"></div>
+
+      <button class="action" id="btnCalc">Calcular</button>
+      <div id="resultBox"></div>
+
+      <div class="help">
+        <b>Sintaxis.</b> Funciones: <code>sin</code>/<code>sen</code>, <code>cos</code>, <code>tan</code>/<code>tg</code>,
+        <code>cot</code>, <code>sec</code>, <code>csc</code>, <code>asin</code>/<code>arcsen</code>, <code>acos</code>, <code>atan</code>, <code>atan2(y,x)</code>,
+        <code>sinh</code>, <code>cosh</code>, <code>tanh</code>, <code>exp</code>, <code>sqrt</code>/<code>raiz</code>, <code>cbrt</code>,
+        <code>abs</code>, <code>min</code>, <code>max</code>, <code>mod</code>, <code>floor</code>, <code>ceil</code>, <code>round</code>.
+        Constantes: <code>pi</code> o <code>π</code>, <code>e</code>. Potencias con <code>^</code> (<code>x^2</code>, <code>x^(1/3)</code>).<br>
+        <b>Logaritmos:</b> <code>ln(x)</code> es el natural y <code>log(x)</code> es base 10; para otra base, <code>log(x, b)</code>.
+        (Ojo: muchas librerías usan <code>log</code> como natural — acá no.)<br>
+        <b>Producto implícito permitido:</b> <code>2x</code>, <code>3sen(x)</code>, <code>(x+1)(y-1)</code> se leen como productos.
+        Las variables angulares se pueden escribir <code>theta</code>/<code>θ</code>, <code>phi</code>/<code>φ</code>, <code>rho</code>/<code>ρ</code>.<br>
+        <b>El jacobiano</b> (<span class="math">r</span>, o <span class="math">ρ²senφ</span>) lo aplica la calculadora sola: no lo escribas en el integrando.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: VISUALIZACIÓN ===================== -->
+  <section id="tab-viz" class="tabpanel">
+    <div class="panel">
+      <h2>Visualización 3D <span id="vizChip"></span></h2>
+      <p class="sub" style="margin-bottom:10px">Usa la configuración actual de la pestaña Calculadora (función, límites, modo).</p>
+      <button class="action" id="btnPlot">Graficar</button>
+      <div class="vizctl">
+        <button class="ghost" data-view="iso">Vista isométrica</button>
+        <button class="ghost" data-view="top">Desde arriba</button>
+        <button class="ghost" data-view="front">De frente</button>
+        <label class="chk"><input type="checkbox" id="halfCut"> Cortar por la mitad</label>
+        <button class="ghost" id="btnBig">Agrandar</button>
+      </div>
+      <div id="plot3d" style="margin-top:12px;"></div>
+      <div class="viz-note" id="vizNote">Para dobles se grafica la superficie z=f recortada a la región R. Para triples se dibuja la superficie del sólido D, coloreada según el valor del integrando (sin el jacobiano).</div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: CAMPOS VECTORIALES ===================== -->
+  <section id="tab-fields" class="tabpanel">
+    <div class="panel">
+      <h2>Campo vectorial</h2>
+      <p class="sub" style="margin-bottom:10px">Pertenece a integrales de línea y superficie (Green, Stokes, divergencia), no a la Unidad 3. Está acá como herramienta de visualización.</p>
+
+      <div class="field">
+        <label>Dimensión</label>
+        <div class="grpsel">
+          <button type="button" data-fdim="2" id="fd2">R² &nbsp;F(x,y)</button>
+          <button type="button" data-fdim="3" id="fd3">R³ &nbsp;F(x,y,z)</button>
+        </div>
+      </div>
+
+      <div class="field"><label for="fP">P (componente en x)</label>
+        <input type="text" id="fP" value="-y" spellcheck="false" autocapitalize="off"></div>
+      <div class="field"><label for="fQ">Q (componente en y)</label>
+        <input type="text" id="fQ" value="x" spellcheck="false" autocapitalize="off"></div>
+      <div class="field" id="fRfield" style="display:none"><label for="fR">R (componente en z)</label>
+        <input type="text" id="fR" value="0" spellcheck="false" autocapitalize="off"></div>
+
+      <div class="field"><label>Dominio (mismo rango en cada eje)</label>
+        <div class="bnd-row">
+          <input type="text" class="fdom" id="fDomLo" value="-2" spellcheck="false">
+          <span class="bnd-sep">a</span>
+          <input type="text" class="fdom" id="fDomHi" value="2" spellcheck="false">
+        </div>
+      </div>
+
+      <div class="vizctl">
+        <label class="chk"><input type="checkbox" id="fArrows" checked> Vectores</label>
+        <label class="chk"><input type="checkbox" id="fLines" checked> Líneas de campo</label>
+        <label class="chk"><input type="checkbox" id="fNorm" checked> Longitud comprimida</label>
+      </div>
+
+      <button class="action" id="btnField" style="margin-top:10px">Dibujar campo</button>
+
+      <div class="vizctl">
+        <button class="ghost" data-fpreset="rot">Rot</button>
+        <button class="ghost" data-fpreset="div">Div</button>
+        <button class="ghost" data-fpreset="grad">Gradiente</button>
+      </div>
+      <div class="vizctl">
+        <button class="ghost" data-fpreset="fuente">Fuente</button>
+        <button class="ghost" data-fpreset="sumidero">Sumidero</button>
+        <button class="ghost" data-fpreset="solen">Solenoidal</button>
+      </div>
+
+      <div id="plotField" style="margin-top:12px;"></div>
+      <div class="viz-note" id="fieldNote">Elegí la dimensión, escribí las componentes y dibujá. En R³ se puede rotar; en R² la vista queda fija en el plano xy.</div>
+      <div id="fieldCalc" class="result" style="display:none"></div>
+
+      <div class="help">
+        <b>Longitud comprimida:</b> la flecha se dibuja con longitud proporcional a √|F| recortada al paso de la grilla, y la magnitud real va en el color.
+        Sin esa compresión, un campo como <span class="math">F = (x, y)</span> dibuja las flechas del borde diez veces más largas que las del centro y el gráfico se vuelve ilegible.
+        <b>Las líneas de campo</b> se integran con Runge-Kutta de orden 4 sobre el campo normalizado, así el paso es uniforme en longitud de arco y no en tiempo.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: SUPERFICIES / STOKES-GAUSS ===================== -->
+  <section id="tab-surfaces" class="tabpanel">
+    <div class="panel">
+      <h2>Superficies, curvas y campos</h2>
+      <p class="sub" style="margin-bottom:12px">Superficie paramétrica r(u,v) con sus normales, curva r(t) con sus tangentes, y el campo F encima. Abajo, los dos lados de Stokes calculados aparte para que los compares.</p>
+
+      <div class="vizctl">
+        <button class="ghost" data-sgp="semiesfera">Media esfera</button>
+        <button class="ghost" data-sgp="paraboloide">Paraboloide</button>
+        <button class="ghost" data-sgp="disco">Disco</button>
+        <button class="ghost" data-sgp="esfera">Esfera (Gauss)</button>
+        <button class="ghost" data-sgp="cilindro">Cilindro</button>
+      </div>
+
+      <div class="field"><label>Superficie r(u,v) = ( x , y , z )</label>
+        <div class="sg3"><input type="text" id="sSx" value="sin(u)*cos(v)" spellcheck="false">
+        <input type="text" id="sSy" value="sin(u)*sin(v)" spellcheck="false">
+        <input type="text" id="sSz" value="cos(u)" spellcheck="false"></div></div>
+      <div class="field"><label>u de — a , v de — a</label>
+        <div class="sg4"><input type="text" id="sU0" value="0"><input type="text" id="sU1" value="pi/2">
+        <input type="text" id="sV0" value="0"><input type="text" id="sV1" value="2*pi"></div></div>
+
+      <div class="field"><label>Curva r(t) = ( x , y , z )</label>
+        <div class="sg3"><input type="text" id="sCx" value="cos(t)" spellcheck="false">
+        <input type="text" id="sCy" value="sin(t)" spellcheck="false">
+        <input type="text" id="sCz" value="0" spellcheck="false"></div></div>
+      <div class="field"><label>t de — a</label>
+        <div class="sg4"><input type="text" id="sT0" value="0"><input type="text" id="sT1" value="2*pi"></div></div>
+
+      <div class="field"><label>Campo F = ( P , Q , R )</label>
+        <div class="sg3"><input type="text" id="sP" value="-y" spellcheck="false">
+        <input type="text" id="sQ" value="x" spellcheck="false">
+        <input type="text" id="sR" value="0" spellcheck="false"></div></div>
+
+      <div class="vizctl">
+        <label class="chk"><input type="checkbox" id="sShowS" checked> Superficie</label>
+        <label class="chk"><input type="checkbox" id="sShowN" checked> Normales</label>
+        <label class="chk"><input type="checkbox" id="sShowC" checked> Curva</label>
+        <label class="chk"><input type="checkbox" id="sShowT" checked> Tangentes</label>
+        <label class="chk"><input type="checkbox" id="sShowF"> Campo F</label>
+      </div>
+
+      <button class="action" id="btnSG" style="margin-top:10px">Dibujar y verificar</button>
+
+      <div id="plotSG" style="margin-top:12px;"></div>
+      <div class="viz-note" id="sgNote">Arrastrá para rotar. Las normales salen de r_u × r_v, en ese orden.</div>
+      <div id="sgResult" class="result" style="display:none"></div>
+
+      <div class="help">
+        <b>Para Stokes:</b> elegí media esfera, paraboloide o disco. Los tres tienen el mismo borde —la circunferencia unidad— así que
+        ∬<sub>S</sub> (rot F)·n dS tiene que dar lo mismo en los tres y coincidir con la circulación ∮<sub>C</sub> F·dr. Esa independencia de la superficie es el contenido del teorema.<br>
+        <b>Para Gauss:</b> con la esfera cerrada, el flujo ∯<sub>S</sub> F·n dS debe valer lo mismo que ∭<sub>D</sub> div F dV. Con F=(x,y,z), div F = 3 y el volumen es 4π/3, así que el flujo tiene que dar 4π ≈ 12,566.
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== TAB: EJEMPLOS ===================== -->
+  <section id="tab-examples" class="tabpanel">
+    <div class="panel">
+      <h2>30 ejemplos resueltos</h2>
+      <p class="sub" style="margin-bottom:10px">Extraídos del TP3. Cada uno indica región/planteo, técnica y resultado numérico validado. «Cargar» lo abre en la Calculadora.</p>
+      <div id="exList"></div>
+    </div>
+  </section>
+
+
+  <footer class="note">Motor: cuadratura de Simpson adaptativa (validada contra scipy en los 30 ejemplos, error relativo &lt; 2·10⁻⁷).</footer>
+</div>
+
+<script>
+/* ============================================================
+   MOTOR NUMÉRICO — Simpson adaptativo (validado)
+   ============================================================ */
+function adaptiveSimpson(f, a, b, tol, maxDepth) {
+  function est(fa, fm, fb, a, b) { return ((b - a) / 6) * (fa + 4 * fm + fb); }
+  function rec(a, b, fa, fm, fb, whole, tol, depth) {
+    const m = (a + b) / 2, lm = (a + m) / 2, rm = (m + b) / 2;
+    const flm = f(lm), frm = f(rm);
+    const left = est(fa, flm, fm, a, m), right = est(fm, frm, fb, m, b);
+    const diff = left + right - whole;
+    if (depth <= 0 || Math.abs(diff) <= 15 * tol) return left + right + diff / 15;
+    return rec(a, m, fa, flm, fm, left, tol / 2, depth - 1) + rec(m, b, fm, frm, fb, right, tol / 2, depth - 1);
+  }
+  const m = (a + b) / 2, fa = f(a), fm = f(m), fb = f(b);
+  const whole = est(fa, fm, fb, a, b);
+  return rec(a, b, fa, fm, fb, whole, tol, maxDepth);
+}
+function integrate2D(f, a, b, g1, g2, tol) {
+  tol = tol || 3e-8;
+  return adaptiveSimpson((x) => {
+    const lo = g1(x), hi = g2(x);
+    if (!(hi > lo)) return 0;
+    return adaptiveSimpson((y) => f(x, y), lo, hi, tol, 20);
+  }, a, b, tol, 20);
+}
+function integrate3D(f, a, b, g1, g2, h1, h2, tol) {
+  tol = tol || 3e-7;
+  return adaptiveSimpson((x) => {
+    const ylo = g1(x), yhi = g2(x);
+    if (!(yhi > ylo)) return 0;
+    return adaptiveSimpson((y) => {
+      const zlo = h1(x, y), zhi = h2(x, y);
+      if (!(zhi > zlo)) return 0;
+      return adaptiveSimpson((z) => f(x, y, z), zlo, zhi, tol, 18);
+    }, ylo, yhi, tol, 18);
+  }, a, b, tol, 18);
+}
+
+/* ============================================================
+   CONFIGURACIÓN DE MODOS
+   vars: nombres físicos en orden [exterior, (medio), interior]
+   jac(valsObj): factor jacobiano o null
+   ============================================================ */
+const VNAME = { theta:'θ', phi:'φ', rho:'ρ' };
+function vshow(v){ return VNAME[v] || v; }
+
+const MODES = {
+  A:{ group:'doble', coord:'rect', label:'Rectángulo', vars:['x','y'],
+      jac:null, fLabel:'f(x, y)',
+      bounds:[ {v:'x',dep:[],lo:'0',hi:'1'}, {v:'y',dep:[],lo:'0',hi:'2'} ],
+      fDefault:'x*y' },
+  B:{ group:'doble', coord:'rect', label:'Región general — tipo I (dy dx)', vars:['x','y'],
+      jac:null, fLabel:'f(x, y)',
+      bounds:[ {v:'x',dep:[],lo:'0',hi:'1'}, {v:'y',dep:['x'],lo:'0',hi:'x^2'} ],
+      fDefault:'x+y' },
+  C:{ group:'doble', coord:'rect', label:'Región general — tipo II (dx dy)', vars:['y','x'],
+      jac:null, fLabel:'f(x, y)',
+      bounds:[ {v:'y',dep:[],lo:'0',hi:'1'}, {v:'x',dep:['y'],lo:'0',hi:'y^2'} ],
+      fDefault:'x+y' },
+  D:{ group:'doble', coord:'polar', label:'Polares', vars:['theta','r'],
+      jac:(v)=>v.r, fLabel:'f(r, θ)  — sin el jacobiano r',
+      bounds:[ {v:'theta',dep:[],lo:'0',hi:'2*pi'}, {v:'r',dep:['theta'],lo:'0',hi:'1'} ],
+      fDefault:'1' },
+  E:{ group:'triple', coord:'rect', label:'Caja', vars:['x','y','z'],
+      jac:null, fLabel:'f(x, y, z)',
+      bounds:[ {v:'x',dep:[],lo:'0',hi:'1'}, {v:'y',dep:['x'],lo:'0',hi:'1'}, {v:'z',dep:['x','y'],lo:'0',hi:'1'} ],
+      fDefault:'x*y*z' },
+  F:{ group:'triple', coord:'rect', label:'Región general (dz dy dx)', vars:['x','y','z'],
+      jac:null, fLabel:'f(x, y, z)',
+      bounds:[ {v:'x',dep:[],lo:'0',hi:'1'}, {v:'y',dep:['x'],lo:'0',hi:'1-x'}, {v:'z',dep:['x','y'],lo:'0',hi:'1-x-y'} ],
+      fDefault:'1' },
+  G1:{ group:'triple', coord:'cil', label:'Cilíndricas — z interior (dz r dr dθ)', vars:['theta','r','z'],
+      jac:(v)=>v.r, fLabel:'f(r, θ, z) — sin el jacobiano r',
+      bounds:[ {v:'theta',dep:[],lo:'0',hi:'2*pi'}, {v:'r',dep:['theta'],lo:'0',hi:'1'}, {v:'z',dep:['theta','r'],lo:'0',hi:'1'} ],
+      fDefault:'1' },
+  G2:{ group:'triple', coord:'cil', label:'Cilíndricas — r interior (dr r dz dθ)', vars:['theta','z','r'],
+      jac:(v)=>v.r, fLabel:'f(r, θ, z) — sin el jacobiano r',
+      bounds:[ {v:'theta',dep:[],lo:'0',hi:'2*pi'}, {v:'z',dep:['theta'],lo:'0',hi:'1'}, {v:'r',dep:['theta','z'],lo:'0',hi:'1'} ],
+      fDefault:'1' },
+  H:{ group:'triple', coord:'esf', label:'Esféricas (dρ dφ dθ)', vars:['theta','phi','rho'],
+      jac:(v)=>v.rho*v.rho*Math.sin(v.phi), fLabel:'f(ρ, φ, θ) — sin el jacobiano ρ²senφ',
+      bounds:[ {v:'theta',dep:[],lo:'0',hi:'2*pi'}, {v:'phi',dep:['theta'],lo:'0',hi:'pi'}, {v:'rho',dep:['theta','phi'],lo:'0',hi:'1'} ],
+      fDefault:'1' },
+};
+
+let state = { mode:'A', fExpr:'x*y', boundExprs:[['0','1'],['0','2']] };
+
+/* ============================================================
+   UI — pestañas
+   ============================================================ */
+document.querySelectorAll('nav.tabs button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tabpanel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
+    /* un canvas en una pestaña oculta mide 0: al mostrarla hay que remedir y redibujar */
+    const HOST_OF = { viz:'plot3d', fields:'plotField', surfaces:'plotSG' };
+    const wanted = HOST_OF[btn.dataset.tab];
+    if(typeof SCENE!=='undefined' && SCENE && wanted && (SCENE.host||'plot3d')===wanted){
+      if(window.requestAnimationFrame) window.requestAnimationFrame(()=>{ try{ drawScene(); }catch(e){} });
+      else { try{ drawScene(); }catch(e){} }
+    }
+  });
+});
+
+function chipHTML(coord){
+  const names = {rect:'rectangular', polar:'polares', cil:'cilíndricas', esf:'esféricas'};
+  return `<span class="chip chip-${coord}">${names[coord]}</span>`;
+}
+
+/* ============================================================
+   UI — formulario dinámico según modo
+   ============================================================ */
+const modeSelect = document.getElementById('modeSelect');
+const boundsHost = document.getElementById('boundsHost');
+const fExprInput = document.getElementById('fExpr');
+const fLabelEl = document.getElementById('fLabel');
+const modeChipEl = document.getElementById('modeChip');
+const vizChipEl = document.getElementById('vizChip');
+
+function renderBoundsForm(modeKey, presetBounds){
+  const m = MODES[modeKey];
+  boundsHost.innerHTML = '';
+  m.bounds.forEach((b, i)=>{
+    const row = document.createElement('div');
+    row.className = 'bounds-row';
+    const preset = presetBounds && presetBounds[i] ? presetBounds[i] : [b.lo, b.hi];
+    row.innerHTML = `
+      <div class="varname">${vshow(b.v)} ∈</div>
+      <div class="pair">
+        <input type="text" class="bnd-lo" data-i="${i}" value="${preset[0]}" spellcheck="false">
+        <span>—</span>
+        <input type="text" class="bnd-hi" data-i="${i}" value="${preset[1]}" spellcheck="false">
+      </div>
+      <div class="dep">${ b.dep.length ? 'puede depender de: ' + b.dep.map(vshow).join(', ') : 'constante'}</div>
+    `;
+    boundsHost.appendChild(row);
+  });
+}
+
+const LAST_OF_GROUP = { doble:'A', triple:'E' };
+function syncGroupButtons(){
+  const g = MODES[modeSelect.value].group;
+  LAST_OF_GROUP[g] = modeSelect.value;
+  document.getElementById('grpDoble').classList.toggle('on', g==='doble');
+  document.getElementById('grpTriple').classList.toggle('on', g==='triple');
+}
+document.getElementById('orderSelect').addEventListener('change', (e)=>{
+  applyOrder(e.target.value);
+  applyMode('F');
+});
+
+document.querySelectorAll('.grpsel [data-grp]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const g = b.dataset.grp;
+    if (MODES[modeSelect.value].group === g) return;
+    modeSelect.value = LAST_OF_GROUP[g];
+    applyMode(modeSelect.value);
+  });
+});
+modeSelect.addEventListener('change', syncGroupButtons);
+syncGroupButtons();
+
+/* ============================================================
+   Teclado: inserta en el casillero donde estabas escribiendo
+   (integrando o cualquiera de los límites), en la posición del cursor.
+   ============================================================ */
+let ACTIVE_INPUT = null;
+document.addEventListener('focusin', (e)=>{
+  if(e.target && e.target.matches && e.target.matches('#fExpr, .bnd-lo, .bnd-hi')) ACTIVE_INPUT = e.target;
+});
+
+function insertKey(txt){
+  const el = ACTIVE_INPUT || document.getElementById('fExpr');
+  const val = el.value;
+  let s = el.selectionStart, e = el.selectionEnd;
+  if(s===null || s===undefined){ s = val.length; e = val.length; }
+  let ins = txt, caret;
+  if(txt.charAt(txt.length-1)==='('){ ins = txt+')'; caret = s + txt.length; }  /* cierra solo */
+  else caret = s + ins.length;
+  el.value = val.slice(0,s) + ins + val.slice(e);
+  ACTIVE_INPUT = el;
+  el.focus();
+  if(el.setSelectionRange) el.setSelectionRange(caret, caret);
+}
+function backspaceKey(){
+  const el = ACTIVE_INPUT || document.getElementById('fExpr');
+  const val = el.value;
+  let s = el.selectionStart, e = el.selectionEnd;
+  if(s===null || s===undefined){ s = val.length; e = val.length; }
+  if(s===e){ if(s===0) return; el.value = val.slice(0,s-1)+val.slice(s); s=s-1; }
+  else { el.value = val.slice(0,s)+val.slice(e); }
+  el.focus();
+  if(el.setSelectionRange) el.setSelectionRange(s,s);
+}
+
+const KEY_GROUPS = {
+  'Básico': [['√(','sqrt('], ['∛(','cbrt('], ['x²','^2'], ['x³','^3'], ['xⁿ','^'],
+             ['(','('], [')',')'], ['+','+'], ['−','-'], ['×','*'], ['÷','/'], ['.','.']],
+  'Trig':   [['sen','sin('], ['cos','cos('], ['tg','tan('],
+             ['sec','sec('], ['csc','csc('], ['cotg','cot('],
+             ['arcsen','asin('], ['arccos','acos('], ['arctg','atan('],
+             ['senh','sinh('], ['cosh','cosh('], ['tgh','tanh(']],
+  'Exp/Log':[['eˣ','exp('], ['ln','ln('], ['log','log('], ['log₂','log2('],
+             ['|x|','abs('], ['π','pi'], ['e','e']],
+  'Plantillas': [['√(1−x²)','sqrt(1-x^2)'], ['√(a²−x²−y²)','sqrt(4-x^2-y^2)'],
+             ['x²+y²','x^2+y^2'], ['√(x²+y²)','sqrt(x^2+y^2)'],
+             ['x²+y²+z²','x^2+y^2+z^2'], ['ρ²senφ','rho^2*sin(phi)']]
+};
+let KEY_TAB = 'Básico';
+
+function renderKeypad(modeKey){
+  const host = document.getElementById('keypad');
+  if(!host) return;
+  host.innerHTML = '';
+
+  const mk = (txt, ins, cls, parent)=>{
+    const b = document.createElement('button');
+    b.type='button'; b.textContent = txt; if(cls) b.className = cls;
+    b.addEventListener('mousedown', ev=>ev.preventDefault());   /* no perder el foco */
+    b.addEventListener('click', ()=> ins===null ? backspaceKey() : insertKey(ins));
+    (parent||host).appendChild(b);
+  };
+
+  /* fila 1: variables del modo actual + borrar */
+  const rowVars = document.createElement('div');
+  rowVars.className = 'kprow';
+  MODES[modeKey].vars.forEach(v => mk(vshow(v), v, 'kvar', rowVars));
+  mk('⌫', null, 'kdel', rowVars);
+  host.appendChild(rowVars);
+
+  /* fila 2: pestañas de categoría */
+  const tabs = document.createElement('div');
+  tabs.className = 'kptabs';
+  Object.keys(KEY_GROUPS).forEach(name=>{
+    const t = document.createElement('button');
+    t.type='button'; t.textContent = name;
+    if(name===KEY_TAB) t.className='on';
+    t.addEventListener('mousedown', ev=>ev.preventDefault());
+    t.addEventListener('click', ()=>{ KEY_TAB = name; renderKeypad(modeKey); });
+    tabs.appendChild(t);
+  });
+  host.appendChild(tabs);
+
+  /* fila 3: teclas de la categoría elegida */
+  const rowKeys = document.createElement('div');
+  rowKeys.className = 'kprow';
+  (KEY_GROUPS[KEY_TAB]||[]).forEach(k => mk(k[0], k[1], null, rowKeys));
+  host.appendChild(rowKeys);
+}
+
+/* Orden de integración para el modo F: las 6 permutaciones de (x,y,z).
+   Se reordenan los casilleros y las dependencias; los límites los reescribe
+   el alumno, porque convertirlos ES el ejercicio. */
+const ORDER_DEFAULTS = {
+  xyz:['0','1','0','1-x','0','1-x-y'], xzy:['0','1','0','1-x','0','1-x-z'],
+  yxz:['0','1','0','1-y','0','1-x-y'], yzx:['0','1','0','1-y','0','1-y-z'],
+  zxy:['0','1','0','1-z','0','1-x-z'], zyx:['0','1','0','1-z','0','1-y-z']
+};
+function applyOrder(code){
+  const v = code.split('');
+  const d = ORDER_DEFAULTS[code];
+  MODES.F.vars = v;
+  MODES.F.bounds = [
+    {v:v[0], dep:[],            lo:d[0], hi:d[1]},
+    {v:v[1], dep:[v[0]],        lo:d[2], hi:d[3]},
+    {v:v[2], dep:[v[0],v[1]],   lo:d[4], hi:d[5]}
+  ];
+  MODES.F.label = 'Región general — d'+v[2]+' d'+v[1]+' d'+v[0];
+}
+
+function applyMode(modeKey, opts){
+  opts = opts || {};
+  const m = MODES[modeKey];
+  modeSelect.value = modeKey;
+  fLabelEl.textContent = 'Integrando  ' + m.fLabel;
+  fExprInput.value = opts.fExpr !== undefined ? opts.fExpr : m.fDefault;
+  renderBoundsForm(modeKey, opts.boundExprs);
+  modeChipEl.innerHTML = chipHTML(m.coord);
+  vizChipEl.innerHTML = chipHTML(m.coord);
+  const of = document.getElementById('orderField');
+  if(of) of.style.display = (modeKey==='F') ? '' : 'none';
+  renderKeypad(modeKey);
+  state.mode = modeKey;
+  if (typeof syncGroupButtons === 'function') syncGroupButtons();
+}
+applyMode('A');
+
+modeSelect.addEventListener('change', ()=> applyMode(modeSelect.value));
+
+/* ============================================================
+   Lectura de la configuración actual desde el formulario
+   ============================================================ */
+function readCurrentConfig(){
+  const modeKey = modeSelect.value;
+  const fExpr = fExprInput.value.trim();
+  const los = Array.from(document.querySelectorAll('.bnd-lo')).map(i=>i.value.trim());
+  const his = Array.from(document.querySelectorAll('.bnd-hi')).map(i=>i.value.trim());
+  const boundExprs = los.map((lo,i)=>[lo, his[i]]);
+  return { modeKey, fExpr, boundExprs };
+}
+
+/* ============================================================
+   Compilador de expresiones — implementación propia, sin dependencias.
+   Compila a closures JS: parsea una vez, evalúa millones de veces.
+   Acepta notación de cátedra: sen, tg, ln, π, θ, φ, ρ, y producto
+   implícito (2x, 3sen(x), (x+1)(x-1)).
+   ============================================================ */
+const MATHCONST = { pi:Math.PI, 'π':Math.PI, e:Math.E, tau:2*Math.PI, 'τ':2*Math.PI };
+const FUNCS = {
+  sin:[1,Math.sin], cos:[1,Math.cos], tan:[1,Math.tan],
+  cot:[1,x=>1/Math.tan(x)], sec:[1,x=>1/Math.cos(x)], csc:[1,x=>1/Math.sin(x)],
+  asin:[1,Math.asin], acos:[1,Math.acos], atan:[1,Math.atan],
+  sinh:[1,Math.sinh], cosh:[1,Math.cosh], tanh:[1,Math.tanh],
+  exp:[1,Math.exp], ln:[1,Math.log], log10:[1,Math.log10], log2:[1,Math.log2],
+  sqrt:[1,Math.sqrt], cbrt:[1,Math.cbrt], abs:[1,Math.abs], sign:[1,Math.sign],
+  floor:[1,Math.floor], ceil:[1,Math.ceil], round:[1,Math.round],
+  atan2:[2,Math.atan2], pow:[2,Math.pow], hypot:[2,Math.hypot],
+  mod:[2,(a,b)=>a-b*Math.floor(a/b)],
+  min:[2,Math.min], max:[2,Math.max],
+  log:[0,(x,b)=> (b===undefined ? Math.log10(x) : Math.log(x)/Math.log(b))]
+};
+const FN_ALIAS = { sen:'sin', tg:'tan', ctg:'cot', cotg:'cot', arcsen:'asin',
+  arcsin:'asin', arccos:'acos', arctg:'atan', arctan:'atan',
+  raiz:'sqrt', 'raíz':'sqrt', modulo:'abs', 'módulo':'abs' };
+const VAR_ALIAS = { 'θ':'theta', 'φ':'phi', 'ρ':'rho' };
+
+function tokenize(s){
+  const T=[]; let i=0;
+  const dig = c => c>='0' && c<='9';
+  const alp = c => /[A-Za-zÀ-ÿα-ωΑ-Ω_]/.test(c);
+  while(i<s.length){
+    const c=s[i];
+    if(c===' '||c==='\t'){ i++; continue; }
+    if(dig(c) || (c==='.' && dig(s[i+1]))){
+      let j=i; while(j<s.length && (dig(s[j])||s[j]==='.')) j++;
+      if(s[j]==='e'||s[j]==='E'){ let k=j+1; if(s[k]==='+'||s[k]==='-') k++;
+        if(dig(s[k])){ while(k<s.length && dig(s[k])) k++; j=k; } }
+      T.push({t:'num', v:parseFloat(s.slice(i,j))}); i=j; continue;
+    }
+    if(alp(c)){ let j=i; while(j<s.length && (alp(s[j])||dig(s[j]))) j++;
+      T.push({t:'id', v:s.slice(i,j)}); i=j; continue; }
+    if('+-*/^(),'.indexOf(c)>=0){ T.push({t:c}); i++; continue; }
+    throw new Error('carácter no reconocido: "'+c+'"');
+  }
+  return T;
+}
+
+/* devuelve f(v) donde v es el array de valores de varNames, en ese orden */
+function compileExpr(src, varNames){
+  const vars = varNames || [];
+  const T = tokenize(src && src.trim().length ? src : '0');
+  const idx = {}; vars.forEach((n,i)=>{ idx[n]=i; });
+  let p = 0;
+  const peek = () => T[p];
+  const next = () => T[p++];
+
+  function parseExpr(){
+    let n = parseTerm();
+    while(peek() && (peek().t==='+' || peek().t==='-')){
+      const op = next().t, r = parseTerm(), l = n;
+      n = op==='+' ? (v)=>l(v)+r(v) : (v)=>l(v)-r(v);
+    }
+    return n;
+  }
+  function parseTerm(){
+    let n = parseUnary();
+    for(;;){
+      const k = peek();
+      if(k && (k.t==='*' || k.t==='/')){
+        const op = next().t, r = parseUnary(), l = n;
+        n = op==='*' ? (v)=>l(v)*r(v) : (v)=>l(v)/r(v); continue;
+      }
+      if(k && (k.t==='num' || k.t==='id' || k.t==='(')){   /* producto implícito */
+        const r = parseUnary(), l = n; n = (v)=>l(v)*r(v); continue;
+      }
+      break;
+    }
+    return n;
+  }
+  function parseUnary(){
+    const k = peek();
+    if(k && k.t==='-'){ next(); const a=parseUnary(); return (v)=>-a(v); }
+    if(k && k.t==='+'){ next(); return parseUnary(); }
+    return parsePower();
+  }
+  function parsePower(){
+    const b = parseAtom();
+    if(peek() && peek().t==='^'){ next(); const e = parseUnary(); return (v)=>Math.pow(b(v),e(v)); }
+    return b;
+  }
+  function parseAtom(){
+    const k = next();
+    if(!k) throw new Error('la expresión termina antes de lo esperado');
+    if(k.t==='num'){ const c=k.v; return ()=>c; }
+    if(k.t==='('){ const e=parseExpr(); const cl=next();
+      if(!cl || cl.t!==')') throw new Error('falta un ")"'); return e; }
+    if(k.t==='id'){
+      const name = k.v;
+      const fname = FN_ALIAS[name] || name;
+      if(peek() && peek().t==='(' && FUNCS[fname]){
+        next();
+        const args=[];
+        if(peek() && peek().t===')'){ next(); }
+        else for(;;){
+          args.push(parseExpr());
+          const d = next();
+          if(!d) throw new Error('falta un ")"');
+          if(d.t===')') break;
+          if(d.t!==',') throw new Error('se esperaba "," o ")" en '+name+'()');
+        }
+        const spec = FUNCS[fname], ar = spec[0], fn = spec[1];
+        if(ar>0 && args.length!==ar)
+          throw new Error(name+'() espera '+ar+' argumento'+(ar>1?'s':'')+', recibió '+args.length);
+        if(args.length===1){ const a=args[0]; return (v)=>fn(a(v)); }
+        if(args.length===2){ const a=args[0], b=args[1]; return (v)=>fn(a(v),b(v)); }
+        return (v)=>fn.apply(null, args.map(a=>a(v)));
+      }
+      const vname = VAR_ALIAS[name] || name;
+      if(vname in idx){ const i=idx[vname]; return (v)=>v[i]; }
+      if(name in MATHCONST){ const c=MATHCONST[name]; return ()=>c; }
+      if(FUNCS[fname]) throw new Error('falta "(" después de '+name);
+      throw new Error('nombre no reconocido: "'+name+'". Variables válidas en este modo: '
+        + (vars.length ? vars.map(vshow).join(', ') : 'ninguna (acá sólo van constantes)'));
+    }
+    throw new Error('símbolo inesperado: "'+k.t+'"');
+  }
+
+  const root = parseExpr();
+  if(p < T.length) throw new Error('sobra texto después de una expresión completa');
+  return root;
+}
+
+function buildEvaluators(modeKey, fExpr, boundExprs){
+  const m = MODES[modeKey];
+  const vars = m.vars;
+  const idx = {}; vars.forEach((n,i)=>{ idx[n]=i; });
+  if(!fExpr || !fExpr.trim().length)
+    throw new Error('falta el integrando. Si lo que buscás es un área o un volumen, el integrando es 1.');
+  const fC = compileExpr(fExpr, vars);
+
+  const jacFast = !m.jac ? null
+    : (modeKey==='H'
+        ? (v)=> v[idx.rho]*v[idx.rho]*Math.sin(v[idx.phi])
+        : (v)=> v[idx.r]);
+
+  const rawF = (...vals) => fC(vals);
+  const integrand2 = (a,b) => { const v=[a,b];   const raw=fC(v); return jacFast ? raw*jacFast(v) : raw; };
+  const integrand3 = (a,b,c) => { const v=[a,b,c]; const raw=fC(v); return jacFast ? raw*jacFast(v) : raw; };
+
+  const outerLo = compileExpr(boundExprs[0][0], [])([]);
+  const outerHi = compileExpr(boundExprs[0][1], [])([]);
+  if(!isFinite(outerLo) || !isFinite(outerHi))
+    throw new Error('los límites exteriores deben ser números (no pueden depender de variables)');
+
+  const b1 = compileExpr(boundExprs[1][0], [vars[0]]);
+  const b1h = compileExpr(boundExprs[1][1], [vars[0]]);
+  const g1 = (x)=> b1([x]);
+  const g2 = (x)=> b1h([x]);
+
+  let h1=null, h2=null;
+  if (vars.length===3){
+    const b2 = compileExpr(boundExprs[2][0], [vars[0],vars[1]]);
+    const b2h = compileExpr(boundExprs[2][1], [vars[0],vars[1]]);
+    h1 = (x,y)=> b2([x,y]);
+    h2 = (x,y)=> b2h([x,y]);
+  }
+  return { vars, rawF, integrand2, integrand3, outerLo, outerHi, g1, g2, h1, h2, jac:m.jac };
+}
+
+function fmtNum(x){
+  if (!isFinite(x)) return null;
+  const ax = Math.abs(x);
+  if (ax !== 0 && (ax < 1e-4 || ax >= 1e6)) return x.toExponential(6);
+  const r = Math.round(x*1e7)/1e7;
+  return r.toString();
+}
+
+function notationHTML(modeKey, fExpr, boundExprs){
+  const m = MODES[modeKey];
+  const opSym = m.vars.length===3 ? '∭' : '∬';
+  const parts = m.bounds.map((b,i)=> `${vshow(b.v)}∈[${boundExprs[i][0]}, ${boundExprs[i][1]}]`);
+  const jacTxt = m.jac ? (modeKey==='H' ? ' · ρ²senφ' : ' · r') : '';
+  return `${opSym} (${fExpr})${jacTxt} d(${m.vars.map(vshow).join(',')}),&nbsp; ${parts.join(',&nbsp; ')}`;
+}
+
+/* ============================================================
+   Calcular
+   ============================================================ */
+document.getElementById('btnCalc').addEventListener('click', ()=>{
+  const cfg = readCurrentConfig();
+  state = { mode:cfg.modeKey, fExpr:cfg.fExpr, boundExprs:cfg.boundExprs };
+  const box = document.getElementById('resultBox');
+  try{
+    const ev = buildEvaluators(cfg.modeKey, cfg.fExpr, cfg.boundExprs);
+    let value;
+    if (ev.vars.length===2){
+      value = integrate2D(ev.integrand2, ev.outerLo, ev.outerHi, ev.g1, ev.g2);
+    } else {
+      value = integrate3D(ev.integrand3, ev.outerLo, ev.outerHi, ev.g1, ev.g2, ev.h1, ev.h2);
+    }
+    const shown = fmtNum(value);
+    if (shown===null){
+      box.innerHTML = `<div class="result err"><div class="num">No se pudo evaluar en todo el dominio</div><div class="notation">Revisá que la función esté definida en toda la región (dominio, raíces de números negativos, límites coherentes).</div></div>`;
+    } else {
+      box.innerHTML = `<div class="result"><div class="num">≈ ${shown}</div><div class="notation">${notationHTML(cfg.modeKey, cfg.fExpr, cfg.boundExprs)}</div></div>`;
+    }
+  } catch(e){
+    box.innerHTML = `<div class="result err"><div class="num">Error de sintaxis</div><div class="notation">${e.message}</div></div>`;
+  }
+});
+
+/* ============================================================
+   Visualización 3D — renderer propio sobre canvas 2D.
+   Sin dependencias externas: proyección + algoritmo del pintor.
+   Arrastrar = rotar. Rueda o pellizco = zoom.
+   ============================================================ */
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+function hex2rgb(h){
+  h=(h||'#2E6E9E').replace('#','').trim();
+  if(h.length===3) h=h.split('').map(c=>c+c).join('');
+  return [parseInt(h.slice(0,2),16)||0, parseInt(h.slice(2,4),16)||0, parseInt(h.slice(4,6),16)||0];
+}
+function mixRGB(a,b,t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]; }
+function rgba(c,al){ return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+(al===undefined?1:al)+')'; }
+
+/* rampa de color del modo: el extremo claro nunca llega al color del panel,
+   para que un integrando constante no quede invisible sobre el fondo */
+function rampFor(modeKey){
+  const base = hex2rgb(cssVar('--'+MODES[modeKey].coord) || cssVar('--accent'));
+  const pan  = hex2rgb(cssVar('--panel'));
+  return [ mixRGB(base, pan, 0.52), mixRGB(base, [0,0,0], 0.22) ];
+}
+
+const VIEW = { yaw:-2.0, pitch:0.38, zoom:1 };
+let CANVAS_BIG = false;
+
+/* las escenas de R² fijan la cámara de frente al plano; al volver a una escena
+   3D hay que devolverla a la vista isométrica o se ve todo desde arriba */
+function resetViewIfFlat(){
+  if(typeof SCENE!=='undefined' && SCENE && SCENE.flat){ VIEW.yaw=-2.0; VIEW.pitch=0.38; VIEW.zoom=1; }
+}
+let SCENE = null;      /* {prims:[...], box:{...}, labels:{...}} */
+let CANVAS = null, CTX = null;
+
+function ensureCanvas(hostId){
+  const host = document.getElementById(hostId || (SCENE && SCENE.host) || 'plot3d');
+  if (CANVAS && CANVAS.parentNode === host) return CANVAS;
+  host.innerHTML = '';
+  const cv = document.createElement('canvas');
+  cv.style.width = '100%';
+  cv.style.height = CANVAS_BIG ? 'clamp(420px, 82vh, 900px)' : 'clamp(320px, 56vh, 520px)';
+  cv.style.display = 'block';
+  cv.style.touchAction = 'none';
+  cv.style.cursor = 'grab';
+  cv.style.borderRadius = '6px';
+  host.appendChild(cv);
+  CANVAS = cv; CTX = cv.getContext('2d');
+  attachControls(cv);
+  if(window.requestAnimationFrame)
+    window.requestAnimationFrame(()=>{ if(SCENE) try{ drawScene(); }catch(e){} });
+  if (window.ResizeObserver){
+    const ro = new window.ResizeObserver(()=>{ if(SCENE) drawScene(); });
+    ro.observe(cv);
+  } else if (window.addEventListener){
+    window.addEventListener('resize', ()=>{ if(SCENE) drawScene(); });
+  }
+  return cv;
+}
+
+function attachControls(cv){
+  const pts = new Map();
+  let lastX=0, lastY=0, lastDist=0;
+  cv.addEventListener('pointerdown', e=>{
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(cv.setPointerCapture) cv.setPointerCapture(e.pointerId);
+    lastX=e.clientX; lastY=e.clientY; cv.style.cursor='grabbing';
+  });
+  cv.addEventListener('pointermove', e=>{
+    if(!pts.has(e.pointerId)) return;
+    pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    if(pts.size>=2){
+      const a=[...pts.values()];
+      const d=Math.hypot(a[0].x-a[1].x, a[0].y-a[1].y);
+      if(lastDist>0) VIEW.zoom = Math.min(14, Math.max(0.2, VIEW.zoom*(d/lastDist)));
+      lastDist=d;
+    } else if (!(SCENE && SCENE.flat)) {
+      VIEW.yaw   += (e.clientX-lastX)*0.0115;
+      VIEW.pitch += (e.clientY-lastY)*0.0115;
+      VIEW.pitch = Math.max(-1.45, Math.min(1.45, VIEW.pitch));
+      lastX=e.clientX; lastY=e.clientY;
+    }
+    if(SCENE) drawScene();
+  });
+  const up = e=>{ pts.delete(e.pointerId); if(pts.size<2) lastDist=0; cv.style.cursor='grab'; };
+  cv.addEventListener('pointerup', up);
+  cv.addEventListener('pointercancel', up);
+  cv.addEventListener('pointerleave', up);
+  cv.addEventListener('wheel', e=>{
+    e.preventDefault();
+    VIEW.zoom = Math.min(14, Math.max(0.2, VIEW.zoom*Math.exp(-e.deltaY*0.0016)));
+    if(SCENE) drawScene();
+  }, {passive:false});
+}
+
+/* proyección: yaw sobre el eje z, luego inclinación; z queda vertical en pantalla */
+function project(p, box){
+  const nx = (p[0]-box.cx)/box.s, ny = (p[1]-box.cy)/box.s, nz = (p[2]-box.cz)/box.s;
+  const cy=Math.cos(VIEW.yaw), sy=Math.sin(VIEW.yaw);
+  const x1 = nx*cy - ny*sy, y1 = nx*sy + ny*cy, z1 = nz;
+  const cp=Math.cos(VIEW.pitch), sp=Math.sin(VIEW.pitch);
+  return { sx:x1, sy:z1*cp + y1*sp, depth:y1*cp - z1*sp };
+}
+
+function quantile(arr, q){
+  if(!arr.length) return 0;
+  const a=arr.slice().sort((u,v)=>u-v);
+  const i=Math.min(a.length-1, Math.max(0, Math.round(q*(a.length-1))));
+  return a[i];
+}
+
+function buildBox(xs, ys, zs){
+  const mm = v => [Math.min.apply(null,v), Math.max.apply(null,v)];
+  const [x0,x1]=mm(xs), [y0,y1]=mm(ys), [z0,z1]=mm(zs);
+  const s = Math.max(x1-x0, y1-y0, z1-z0, 1e-9)/2;
+  return { x0,x1,y0,y1,z0,z1, cx:(x0+x1)/2, cy:(y0+y1)/2, cz:(z0+z1)/2, s };
+}
+
+/* ---------- escena 1: superficie z=f sobre la región R (modos dobles) ---------- */
+function plotSurface(cfg){
+  resetViewIfFlat();
+  const ev = buildEvaluators(cfg.modeKey, cfg.fExpr, cfg.boundExprs);
+  const N1=44, N2=44;
+  const P=[];                       /* P[i][j] = [x,y,z] o null */
+  const zsAll=[];
+  for(let i=0;i<=N1;i++){
+    const a = ev.outerLo + (ev.outerHi-ev.outerLo)*i/N1;
+    const lo = ev.g1(a), hi = ev.g2(a);
+    const row=[];
+    for(let j=0;j<=N2;j++){
+      if(!(hi>lo)){ row.push(null); continue; }
+      const b = lo + (hi-lo)*j/N2;
+      let z; try{ z = ev.rawF(a,b); }catch(e){ z = NaN; }
+      if(!isFinite(z)){ row.push(null); continue; }
+      let x,y;
+      if(cfg.modeKey==='D'){ x=b*Math.cos(a); y=b*Math.sin(a); }
+      else if(cfg.modeKey==='C'){ x=b; y=a; }
+      else { x=a; y=b; }
+      row.push([x,y,z]); zsAll.push(z);
+    }
+    P.push(row);
+  }
+  if(!zsAll.length) throw new Error('la región es vacía con esos límites (revisá que el límite superior supere al inferior)');
+  /* recorte de outliers para que una singularidad no aplaste la escala */
+  const zlo = quantile(zsAll,0.01), zhi = quantile(zsAll,0.99);
+  const zc = z => Math.max(zlo, Math.min(zhi, z));
+  const xs=[], ys=[], zs=[];
+  for(const row of P) for(const p of row) if(p){ xs.push(p[0]); ys.push(p[1]); zs.push(zc(p[2])); }
+  zs.push(0);                                   /* el plano base siempre entra en cuadro */
+  const box = buildBox(xs, ys, zs);
+
+  const ramp = rampFor(cfg.modeKey);
+  const colLo = ramp[0], colHi = ramp[1];
+  const baseC = hex2rgb(cssVar('--line'));
+  const flat = !(zhi > zlo + 1e-12);        /* f constante: sin rampa, tono medio */
+  const span = Math.max(1e-12, zhi-zlo);
+  const prims=[];
+  for(let i=0;i<N1;i++) for(let j=0;j<N2;j++){
+    const a=P[i][j], b=P[i+1][j], c=P[i+1][j+1], d=P[i][j+1];
+    if(!a||!b||!c||!d) continue;
+    const A=[a[0],a[1],zc(a[2])], B=[b[0],b[1],zc(b[2])], C=[c[0],c[1],zc(c[2])], D=[d[0],d[1],zc(d[2])];
+    /* región R proyectada en z=0, para que se vea el recorte del dominio */
+    prims.push({ v:[[a[0],a[1],0],[b[0],b[1],0],[c[0],c[1],0],[d[0],d[1],0]],
+                 col:baseC, alpha:0.5, shade:false });
+    const t = flat ? 0.5 : ( (A[2]+B[2]+C[2]+D[2])/4 - zlo )/span;
+    prims.push({ v:[A,B,C,D], col:mixRGB(colLo,colHi,Math.max(0,Math.min(1,t))), alpha:0.97, shade:true });
+  }
+  SCENE = { prims, box, kind:'surface',
+            labels:{x:'x', y:'y', z:'z = f'},
+            note:'Superficie z = f recortada a la región de integración R; abajo, en gris, la proyección de R sobre el plano xy.' };
+  drawScene();
+  document.getElementById('vizNote').textContent = SCENE.note + ' Arrastrá para rotar, rueda o pellizco para acercar.';
+}
+
+/* ============================================================
+   Sólido como superficie de contorno.
+   El dominio de integración es una caja en el espacio paramétrico
+   (a,b,c); su frontera son 6 caras. Mapeadas al espacio físico dan
+   exactamente la superficie del sólido: la esfera, el cono, el
+   paraboloide. Es geometría exacta, no una aproximación estadística.
+   ============================================================ */
+function mapPoint(modeKey, a, b, c){
+  if(modeKey==='G1') return [b*Math.cos(a), b*Math.sin(a), c];
+  if(modeKey==='G2') return [c*Math.cos(a), c*Math.sin(a), b];
+  if(modeKey==='H')  return [c*Math.sin(b)*Math.cos(a), c*Math.sin(b)*Math.sin(a), c*Math.cos(b)];
+  return [a, b, c];
+}
+
+function plotSolidSurface(cfg){
+  resetViewIfFlat();
+  const ev = buildEvaluators(cfg.modeKey, cfg.fExpr, cfg.boundExprs);
+  const A0 = ev.outerLo, A1 = ev.outerHi;
+  const N = 26;
+  const mp = (a,b,c)=>{
+    const p = mapPoint(cfg.modeKey, a, b, c);
+    let v; try{ v = ev.rawF(a,b,c); }catch(e){ v = 0; }
+    return { p, v: isFinite(v)?v:0 };
+  };
+  const lin = (lo,hi,i,n)=> lo + (hi-lo)*i/n;
+
+  const faces = [];
+  /* caras a = cte (las dos tapas del recorrido exterior) */
+  for(const aFix of [A0, A1]){
+    const g1=ev.g1(aFix), g2=ev.g2(aFix), grid=[];
+    for(let i=0;i<=N;i++){
+      const b = lin(g1,g2,i,N), h1=ev.h1(aFix,b), h2=ev.h2(aFix,b), row=[];
+      for(let j=0;j<=N;j++) row.push(mp(aFix, b, lin(h1,h2,j,N)));
+      grid.push(row);
+    }
+    faces.push(grid);
+  }
+  /* caras b = g1(a) y b = g2(a) */
+  for(const which of [0,1]){
+    const grid=[];
+    for(let i=0;i<=N;i++){
+      const a = lin(A0,A1,i,N), b = which? ev.g2(a) : ev.g1(a);
+      const h1=ev.h1(a,b), h2=ev.h2(a,b), row=[];
+      for(let j=0;j<=N;j++) row.push(mp(a, b, lin(h1,h2,j,N)));
+      grid.push(row);
+    }
+    faces.push(grid);
+  }
+  /* caras c = h1(a,b) y c = h2(a,b): el piso y el techo del sólido */
+  for(const which of [0,1]){
+    const grid=[];
+    for(let i=0;i<=N;i++){
+      const a = lin(A0,A1,i,N), g1=ev.g1(a), g2=ev.g2(a), row=[];
+      for(let j=0;j<=N;j++){
+        const b = lin(g1,g2,j,N);
+        row.push(mp(a, b, which? ev.h2(a,b) : ev.h1(a,b)));
+      }
+      grid.push(row);
+    }
+    faces.push(grid);
+  }
+
+  const xs=[], ys=[], zs=[], vals=[];
+  for(const g of faces) for(const row of g) for(const q of row){
+    if(q.p.every(isFinite)){ xs.push(q.p[0]); ys.push(q.p[1]); zs.push(q.p[2]); vals.push(q.v); }
+  }
+  if(xs.length<8) throw new Error('el sólido quedó vacío: revisá que cada límite superior supere al inferior');
+  const box = buildBox(xs,ys,zs);
+  const scaleRef = Math.max(box.s, 1e-9);
+
+  const vlo=quantile(vals,0.02), vhi=quantile(vals,0.98);
+  const flat = !(vhi > vlo + 1e-12);
+  const span = Math.max(1e-12, vhi-vlo);
+  const ramp = rampFor(cfg.modeKey);
+
+  const prims=[];
+  for(const g of faces){
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+      const q00=g[i][j], q10=g[i+1][j], q11=g[i+1][j+1], q01=g[i][j+1];
+      if(!q00.p.every(isFinite)||!q10.p.every(isFinite)||!q11.p.every(isFinite)||!q01.p.every(isFinite)) continue;
+      const A=q00.p, B=q10.p, C=q11.p, D=q01.p;
+      /* descartar quads degenerados (caras colapsadas: ρ=0, φ=0, r=0…) */
+      const u=[B[0]-A[0],B[1]-A[1],B[2]-A[2]], v=[D[0]-A[0],D[1]-A[1],D[2]-A[2]];
+      const nx=u[1]*v[2]-u[2]*v[1], ny=u[2]*v[0]-u[0]*v[2], nz=u[0]*v[1]-u[1]*v[0];
+      if(Math.hypot(nx,ny,nz) < 1e-10*scaleRef*scaleRef) continue;
+      const t = flat ? 0.5 : Math.max(0, Math.min(1, ((q00.v+q10.v+q11.v+q01.v)/4 - vlo)/span));
+      prims.push({ v:[A,B,C,D], col:mixRGB(ramp[0],ramp[1],t), alpha:0.97, shade:true });
+    }
+  }
+  if(!prims.length) throw new Error('no se pudo construir la superficie del sólido con esos límites');
+
+  SCENE = { prims, box, kind:'solid', labels:{x:'x', y:'y', z:'z'},
+            note:'Superficie del sólido D (las seis caras del dominio de integración llevadas al espacio). El color es el valor del integrando.' };
+  drawScene();
+  document.getElementById('vizNote').textContent = SCENE.note
+    + ' Marcá «Cortar por la mitad» para ver el interior. Arrastrá para rotar.';
+}
+
+
+/* ---------- dibujo ---------- */
+function drawScene(){
+  if(!SCENE) return;
+  const cv = ensureCanvas(SCENE.host), ctx = CTX;
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth || 600, h = cv.clientHeight || 340;
+  if(cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){
+    cv.width = Math.round(w*dpr); cv.height = Math.round(h*dpr);
+  }
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,w,h);
+  ctx.fillStyle = cssVar('--panel'); ctx.fillRect(0,0,w,h);
+
+  const box = SCENE.box;
+  const PIE = 24;                                  /* banda inferior reservada a la leyenda */
+  const hDraw = Math.max(80, h - PIE);
+  const scale = Math.min(w,hDraw)*((SCENE&&SCENE.flat)?0.44:0.36)*VIEW.zoom;
+  const toPx = p => { const q=project(p,box); return {x:w/2+q.sx*scale, y:hDraw/2-q.sy*scale, d:q.depth}; };
+
+  drawFrame(ctx, box, toPx);
+
+
+  const L=[0.35,-0.55,0.76];
+  const cutEl = document.getElementById('halfCut');
+  const cut = cutEl && cutEl.checked;
+  const keep = p => !cut || p[1] <= box.cy;      /* media sección: se quita y > centro */
+  const items=[];
+  for(const pr of SCENE.prims){
+    if(cut && pr.v && !pr.v.every(keep)) continue;
+
+    if(pr.seg){                                   /* vector: tallo + cabeza */
+      const A=toPx(pr.seg[0]), B=toPx(pr.seg[1]);
+      const d=(A.d+B.d)/2;
+      items.push({d, draw:()=>{
+        ctx.strokeStyle = rgba(pr.col, pr.alpha===undefined?0.95:pr.alpha);
+        ctx.lineWidth = pr.width||1.2;
+        ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke();
+        const ux=B.x-A.x, uy=B.y-A.y, ul=Math.hypot(ux,uy);
+        if(ul>1.5){                               /* la cabeza se arma en pantalla */
+          const hl=Math.min(7, ul*0.42), nx=ux/ul, ny=uy/ul, px=-ny, py=nx, wsp=hl*0.42;
+          ctx.fillStyle = rgba(pr.col, pr.alpha===undefined?0.95:pr.alpha);
+          ctx.beginPath();
+          ctx.moveTo(B.x, B.y);
+          ctx.lineTo(B.x-nx*hl+px*wsp, B.y-ny*hl+py*wsp);
+          ctx.lineTo(B.x-nx*hl-px*wsp, B.y-ny*hl-py*wsp);
+          ctx.closePath(); ctx.fill();
+        }
+      }});
+      continue;
+    }
+    if(pr.path){                                  /* línea de campo */
+      const S=pr.path.map(toPx);
+      let d=0; for(const s of S) d+=s.d; d/=S.length;
+      items.push({d, draw:()=>{
+        ctx.strokeStyle = rgba(pr.col, pr.alpha===undefined?0.8:pr.alpha);
+        ctx.lineWidth = pr.width||1.1;
+        ctx.beginPath(); ctx.moveTo(S[0].x,S[0].y);
+        for(let k=1;k<S.length;k++) ctx.lineTo(S[k].x,S[k].y);
+        ctx.stroke();
+      }});
+      continue;
+    }
+    const S = pr.v.map(toPx);
+    const d = (S[0].d+S[1].d+S[2].d+S[3].d)/4;
+    let col = pr.col;
+    if(pr.shade){
+      const u=[pr.v[1][0]-pr.v[0][0], pr.v[1][1]-pr.v[0][1], (pr.v[1][2]-pr.v[0][2])],
+            v=[pr.v[3][0]-pr.v[0][0], pr.v[3][1]-pr.v[0][1], (pr.v[3][2]-pr.v[0][2])];
+      let n=[u[1]*v[2]-u[2]*v[1], u[2]*v[0]-u[0]*v[2], u[0]*v[1]-u[1]*v[0]];
+      const nl=Math.hypot(n[0],n[1],n[2])||1;
+      const dot=Math.abs((n[0]*L[0]+n[1]*L[1]+n[2]*L[2])/nl);
+      const k=0.62+0.38*dot;
+      col=[col[0]*k, col[1]*k, col[2]*k];
+    }
+    items.push({d, draw:()=>{
+      ctx.beginPath(); ctx.moveTo(S[0].x,S[0].y);
+      for(let k=1;k<4;k++) ctx.lineTo(S[k].x,S[k].y);
+      ctx.closePath();
+      ctx.fillStyle = rgba(col, pr.alpha); ctx.fill();
+      if(pr.shade){ ctx.strokeStyle = rgba(col,0.55); ctx.lineWidth=0.35; ctx.stroke(); }
+    }});
+  }
+  items.sort((a,b)=>b.d-a.d);          /* pintor: lo lejano primero */
+  for(const it of items) it.draw();
+  drawLegend(ctx, box, w, h);
+}
+
+function drawFrame(ctx, box, toPx){
+  if(SCENE && SCENE.flat){                        /* R²: ejes cartesianos, sin caja */
+    ctx.strokeStyle = rgba(hex2rgb(cssVar('--line')), 1); ctx.lineWidth = 0.9;
+    const seg=(a,b)=>{ const A=toPx(a), B=toPx(b);
+      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); };
+    seg([box.x0,box.y0,0],[box.x1,box.y0,0]); seg([box.x0,box.y1,0],[box.x1,box.y1,0]);
+    seg([box.x0,box.y0,0],[box.x0,box.y1,0]); seg([box.x1,box.y0,0],[box.x1,box.y1,0]);
+    ctx.strokeStyle = rgba(hex2rgb(cssVar('--ink-dim')), 0.55); ctx.lineWidth = 1;
+    if(box.y0<0 && box.y1>0) seg([box.x0,0,0],[box.x1,0,0]);
+    if(box.x0<0 && box.x1>0) seg([0,box.y0,0],[0,box.y1,0]);
+    return;
+  }
+  const c=[[box.x0,box.y0,box.z0],[box.x1,box.y0,box.z0],[box.x1,box.y1,box.z0],[box.x0,box.y1,box.z0],
+           [box.x0,box.y0,box.z1],[box.x1,box.y0,box.z1],[box.x1,box.y1,box.z1],[box.x0,box.y1,box.z1]];
+  const E=[[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+  ctx.strokeStyle = rgba(hex2rgb(cssVar('--line')), 0.9); ctx.lineWidth = 0.8;
+  for(const e of E){ const A=toPx(c[e[0]]), B=toPx(c[e[1]]);
+    ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); }
+}
+
+/* leyenda al pie + triedro de orientación: nunca se superponen al dibujo */
+function drawLegend(ctx, box, w, h){
+  const fmt = v => (Math.abs(v)<1e-9 ? '0' : (Math.abs(v)>=100 ? v.toFixed(0) : v.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')));
+  ctx.font = '10.5px "IBM Plex Mono", monospace';
+  ctx.fillStyle = rgba(hex2rgb(cssVar('--ink-dim')), 0.95);
+  ctx.textAlign = 'left';
+  const L = SCENE.labels;
+  ctx.fillText(L.x+' ∈ ['+fmt(box.x0)+', '+fmt(box.x1)+']   '
+             + L.y+' ∈ ['+fmt(box.y0)+', '+fmt(box.y1)+']'
+             + (SCENE.flat ? '' : '   '+L.z+' ∈ ['+fmt(box.z0)+', '+fmt(box.z1)+']'), 8, h-8);
+  if(SCENE.flat) return;
+
+  /* triedro: los mismos ángulos de cámara, dibujado en la esquina */
+  const ox=w-44, oy=44, R=20;
+  const cy=Math.cos(VIEW.yaw), sy=Math.sin(VIEW.yaw), cp=Math.cos(VIEW.pitch), sp=Math.sin(VIEW.pitch);
+  const dir = (vx,vy,vz)=>{ const x1=vx*cy-vy*sy, y1=vx*sy+vy*cy, z1=vz;
+    return { x: ox + x1*R, y: oy - (z1*cp + y1*sp)*R }; };
+  /* un color por eje: a este tamaño (20px) x e y suelen quedar a pocos
+     grados entre sí y el color es lo que realmente los distingue */
+  const AXCOL = { x: hex2rgb(cssVar('--rect')), y: hex2rgb(cssVar('--warm')), z: hex2rgb(cssVar('--ink')) };
+  const axes=[[1,0,0,'x'],[0,1,0,'y'],[0,0,1,'z']];
+  ctx.lineWidth=1.6; ctx.textAlign='center'; ctx.font='bold 11px "IBM Plex Mono", monospace';
+  for(const a of axes){
+    const q=dir(a[0],a[1],a[2]);
+    const col = AXCOL[a[3]];
+    ctx.strokeStyle = rgba(col, 0.95);
+    ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(q.x,q.y); ctx.stroke();
+    ctx.fillStyle = rgba(col, 1);
+    ctx.beginPath(); ctx.arc(q.x,q.y,1.6,0,6.2832); ctx.fill();
+    ctx.fillText(a[3], ox+(q.x-ox)*1.38, oy+(q.y-oy)*1.38+3.5);
+  }
+  ctx.textAlign='left'; ctx.font='10.5px "IBM Plex Mono", monospace';
+}
+
+document.querySelectorAll('.vizctl [data-view]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const v=b.dataset.view;
+    if(v==='iso'){ VIEW.yaw=-2.0; VIEW.pitch=0.38; }
+    else if(v==='top'){ VIEW.yaw=-2.0; VIEW.pitch=1.45; }
+    else { VIEW.yaw=0; VIEW.pitch=0.06; }
+    VIEW.zoom=1;
+    if(SCENE) drawScene();
+  });
+});
+document.getElementById('halfCut').addEventListener('change', ()=>{ if(SCENE) drawScene(); });
+document.getElementById('btnBig').addEventListener('click', (e)=>{
+  CANVAS_BIG = !CANVAS_BIG;
+  e.target.textContent = CANVAS_BIG ? 'Achicar' : 'Agrandar';
+  document.querySelectorAll('canvas').forEach(c=>{
+    c.style.height = CANVAS_BIG ? 'clamp(420px, 82vh, 900px)' : 'clamp(320px, 56vh, 520px)';
+  });
+  if(typeof SCENE!=='undefined' && SCENE) drawScene();
+});
+
+document.getElementById('btnPlot').addEventListener('click', ()=>{
+  const cfg = readCurrentConfig();
+  state = { mode:cfg.modeKey, fExpr:cfg.fExpr, boundExprs:cfg.boundExprs };
+  try{
+    ensureCanvas();
+    if (MODES[cfg.modeKey].vars.length===2) plotSurface(cfg);
+    else plotSolidSurface(cfg);
+  }catch(e){
+    document.getElementById('vizNote').textContent = 'No se pudo graficar: '+e.message;
+  }
+});
+
+/* ============================================================
+   30 EJEMPLOS
+   ============================================================ */
+const EXAMPLES = [
+{n:1, ref:'Ej. 1c', coord:'rect', title:'Doble sobre rectángulo', mode:'A',
+ fExpr:'6*y^2-2*x', bounds:[['0','1'],['0','2']],
+ steps:['Rectángulo fijo: no hace falta trazar región, se integra directo.',
+        'Integral interior en y (x fijo): ∫₀² (6y²−2x) dy = [2y³−2xy]₀² = 16−4x.',
+        'Integral exterior en x: ∫₀¹ (16−4x) dx = [16x−2x²]₀¹ = 14.'],
+ answerExact:'14', answerNum:14},
+{n:2, ref:'Ej. 3', coord:'rect', title:'¿El resultado es un volumen?', mode:'A',
+ fExpr:'2*sin(x)*cos(y)', bounds:[['0','pi/2'],['0','pi/4']],
+ steps:['f(x,y)=2 sen x cos y ≥ 0 en todo el rectángulo [0,π/2]×[0,π/4] ⇒ el resultado SÍ representa un volumen (el del sólido bajo la superficie).',
+        'Separable: ∫₀^(π/2) 2 sen x dx · ∫₀^(π/4) cos y dy.',
+        '∫₀^(π/2) 2 sen x dx = 2. ∫₀^(π/4) cos y dy = √2/2.',
+        'Producto: 2·(√2/2) = √2.'],
+ answerExact:'√2', answerNum:1.4142135624},
+{n:3, ref:'Ej. 6d', coord:'rect', title:'Límite superior variable', mode:'B',
+ fExpr:'8*y', bounds:[['0','1'],['0','sqrt(1-x^2)']],
+ steps:['(la variable s del TP3 se carga acá como x, y t como y — mismo cálculo.)',
+        'Interior en y: ∫₀^√(1−x²) 8y dy = 4(1−x²).',
+        'Exterior: ∫₀¹ 4(1−x²) dx = 4[x−x³/3]₀¹ = 4·(2/3) = 8/3.'],
+ answerExact:'8/3', answerNum:2.6666666667},
+{n:4, ref:'Ej. 9', coord:'rect', title:'Requiere invertir el orden', mode:'B',
+ fExpr:'1/(y^4+1)', bounds:[['0','8'],['x^(1/3)','2']],
+ steps:['Tal como está planteada (dy dx primero) no tiene primitiva elemental en y — por eso el enunciado pide invertir el orden.',
+        'Región: 0≤x≤8, ∛x≤y≤2 ⟺ 0≤y≤2, 0≤x≤y³.',
+        'Invertida: ∫₀² ∫₀^(y³) 1/(y⁴+1) dx dy = ∫₀² y³/(y⁴+1) dy.',
+        'Sustitución u=y⁴+1: = (1/4)ln(y⁴+1)|₀² = (1/4)ln17.',
+        'La calculadora evalúa cualquiera de los dos órdenes (numéricamente da igual); acá se deja cargado el orden ORIGINAL para comprobar que coincide.'],
+ answerExact:'(1/4)ln 17', answerNum:0.7083033360},
+{n:5, ref:'Ej. 10', coord:'rect', title:'Volumen bajo z=x² sobre región entre recta y parábola', mode:'B',
+ fExpr:'x^2', bounds:[['-2','1'],['x','2-x^2']],
+ steps:['Intersección de y=x con y=2−x²: x²+x−2=0 ⇒ x=1, x=−2.',
+        'En ese rango la parábola queda arriba de la recta ⇒ x∈[−2,1], y∈[x, 2−x²].',
+        'Altura del sólido no depende de y ⇒ V=∫₋₂¹ x²·[(2−x²)−x] dx = ∫₋₂¹ (2x²−x⁴−x³) dx.',
+        '= [2x³/3 − x⁵/5 − x⁴/4]₋₂¹ = 13/60 − (−44/15) = 3.15.'],
+ answerExact:'189/60 = 3.15', answerNum:3.15},
+{n:6, ref:'Ej. 15', coord:'rect', title:'Suma de dos integrales → una sola invirtiendo el orden', mode:'B',
+ fExpr:'x^2+y^2', bounds:[['0','1'],['x','2-x']],
+ steps:['Original: V=∫₀¹∫₀^y(x²+y²)dxdy + ∫₁²∫₀^(2−y)(x²+y²)dxdy (dos piezas, dx dy).',
+        'Para x fijo en [0,1]: la primera pieza aporta y∈[x,1] y la segunda y∈[1,2−x] — juntas dan y∈[x, 2−x] sin discontinuidad (en x=1 ambas coinciden en y=1).',
+        'Forma invertida (una sola integral): ∫₀¹∫ₓ^(2−x)(x²+y²) dy dx.',
+        'Interior: [x²y+y³/3]ₓ^(2−x). Exterior en x: resultado 4/3.'],
+ answerExact:'4/3', answerNum:1.3333333333},
+{n:7, ref:'Ej. 16', coord:'rect', title:'Región que maximiza la integral', mode:'B',
+ fExpr:'4-x^2-2*y^2', bounds:[['-2','2'],['-sqrt((4-x^2)/2)','sqrt((4-x^2)/2)']],
+ steps:['Sumar área donde el integrando es negativo SIEMPRE resta al total ⇒ la región que maximiza es exactamente donde 4−x²−2y²≥0.',
+        'Esa región es la elipse x²/4+y²/2≤1 (borde: 4−x²−2y²=0).',
+        'Bounds: x∈[−2,2], y∈[−√((4−x²)/2), √((4−x²)/2)].',
+        'Valor máximo (fórmula del casquete parabólico elíptico, A=4,B=1,C=2): πA²/(2√(BC)) = 4√2·π.'],
+ answerExact:'4√2 π', answerNum:17.7715317524},
+{n:8, ref:'Ej. 19b', coord:'rect', title:'Área entre parábola y recta', mode:'C',
+ fExpr:'1', bounds:[['-2','1'],['y-2','-y^2']],
+ steps:['Curvas: x=−y² y x=y−2 (de y=x+2). Intersección: −y²=y−2 ⇒ y²+y−2=0 ⇒ y=1, y=−2.',
+        'Para y∈[−2,1], x=−y² queda a la derecha de x=y−2 (verificar en y=0: 0 > −2).',
+        'A=∫₋₂¹ [(−y²)−(y−2)] dy = ∫₋₂¹ (−y²−y+2) dy = 9/2.'],
+ answerExact:'9/2', answerNum:4.5},
+{n:9, ref:'Ej. 18 / 32', coord:'rect', title:'Integral de Gauss (existencia + valor)', mode:'A',
+ fExpr:'exp(-x^2-y^2)', bounds:[['0','10'],['0','10']],
+ steps:['Ej.18 justifica que la integral impropia sobre el primer cuadrante existe como límite; Ej.32 la evalúa pasando a polares.',
+        'En polares: ∫₀^(π/2)∫₀^∞ e^(−r²) r dr dθ = (π/2)·[−½e^(−r²)]₀^∞ = π/4.',
+        'Acá se usa un corte finito (10) en vez de ∞ — e^(−100) es despreciable, así que numéricamente da lo mismo.',
+        'Este resultado, doblado a los 4 cuadrantes, es la base de Ej.72 (función Gamma).'],
+ answerExact:'π/4 (con corte en 10, error < 10⁻⁸)', answerNum:0.7853981634},
+{n:10, ref:'Ej. 24a', coord:'rect', title:'Cartesianas → polares', mode:'C',
+ fExpr:'x^2+y^2', bounds:[['0','2'],['0','sqrt(4-y^2)']],
+ steps:['Región: cuarto de disco de radio 2 en el primer cuadrante.',
+        'En polares: r∈[0,2], θ∈[0,π/2], integrando (x²+y²)=r², con jacobiano r ⇒ r³.',
+        '∫₀^(π/2)∫₀² r³ dr dθ = (π/2)·[r⁴/4]₀² = (π/2)·4 = 2π.'],
+ answerExact:'2π', answerNum:6.2831853072},
+{n:11, ref:'Ej. 26', coord:'polar', title:'Área entre cardioide y circunferencia', mode:'D',
+ fExpr:'1', bounds:[['-pi/2','pi/2'],['1','1+cos(theta)']],
+ steps:['r=1+cosθ y r=1 se cortan cuando cosθ=0 ⇒ θ=±π/2.',
+        'Para θ∈[−π/2,π/2], 1+cosθ≥1 ⇒ la cardioide queda afuera de la circunferencia ahí (y solo ahí).',
+        'A=∫₋π/2^π/2 ∫₁^(1+cosθ) r dr dθ = ∫ ½[(1+cosθ)²−1] dθ = 2+π/4.'],
+ answerExact:'2 + π/4', answerNum:2.7853981634},
+{n:12, ref:'Ej. 27', coord:'polar', title:'Área de un pétalo de rosa', mode:'D',
+ fExpr:'1', bounds:[['-pi/6','pi/6'],['0','cos(3*theta)']],
+ steps:['r=cos(3θ)≥0 cuando 3θ∈[−π/2,π/2] ⇒ θ∈[−π/6,π/6] — ese es un pétalo completo.',
+        'A=∫₋π/6^π/6 ∫₀^(cos3θ) r dr dθ = ∫ ½cos²(3θ) dθ.',
+        'Con cos²u=(1+cos2u)/2: resultado π/12.'],
+ answerExact:'π/12', answerNum:0.2617993878},
+{n:13, ref:'Ej. 37', coord:'rect', title:'Masa y momento de inercia (placa)', mode:'B',
+ fExpr:'y+1', bounds:[['-1','1'],['x^2','1']],
+ steps:['Región entre y=x² y y=1 ⇒ x∈[−1,1], y∈[x²,1]. δ(x,y)=y+1.',
+        'Masa: M=∫₋₁¹∫ₓ²¹(y+1) dy dx = 32/15 ≈ 2.1333.',
+        'Momento de inercia respecto al eje y: I_y=∫₋₁¹∫ₓ²¹ x²(y+1) dy dx = 16/35 ≈ 0.4571.',
+        'Cargá f=y+1 para la masa, o f=x^2*(y+1) para I_y (mismos límites) — probá ambas.'],
+ answerExact:'M=32/15;  I_y=16/35', answerNum:2.1333333333},
+{n:14, ref:'Ej. 38b', coord:'rect', title:'Volumen de un tetraedro', mode:'F',
+ fExpr:'1', bounds:[['0','1'],['0','2-2*x'],['0','3-3*x-1.5*y']],
+ steps:['Plano 6x+3y+2z=6 en el primer octante ⇔ forma x/1+y/2+z/3=1 (intersecciones en (1,0,0),(0,2,0),(0,0,3)).',
+        'x∈[0,1]; para x fijo, y∈[0,2−2x] (donde z=0); para (x,y), z∈[0,3−3x−1.5y].',
+        'Fórmula directa para un tetraedro con catetos a,b,c: V=abc/6=(1·2·3)/6=1.'],
+ answerExact:'1', answerNum:1},
+{n:15, ref:'Ej. 39', coord:'cil', title:'Volumen entre dos paraboloides', mode:'G1',
+ fExpr:'1', bounds:[['0','2*pi'],['0','2'],['r^2','8-r^2']],
+ steps:['Intersección z=8−x²−y² con z=x²+y²: 8−r²=r² ⇒ r²=4 ⇒ r=2.',
+        'Cilíndricas: θ∈[0,2π], r∈[0,2], z∈[r², 8−r²].',
+        'V=∫∫∫ r dz dr dθ = 2π∫₀² r(8−2r²) dr = 2π[4r²−r⁴/2]₀² = 16π.'],
+ answerExact:'16π', answerNum:50.2654824574},
+{n:16, ref:'Ej. 40a', coord:'rect', title:'Triple directa sobre un cubo', mode:'E',
+ fExpr:'x^2+y^2+z^2', bounds:[['0','1'],['0','1'],['0','1']],
+ steps:['Por simetría, ∫∫∫x²dV=∫∫∫y²dV=∫∫∫z²dV sobre el cubo unitario, cada una vale 1/3.',
+        'Suma total: 1/3+1/3+1/3 = 1.'],
+ answerExact:'1', answerNum:1},
+{n:17, ref:'Ej. 45a', coord:'cil', title:'Evaluación directa en cilíndricas', mode:'G1',
+ fExpr:'1', bounds:[['0','2*pi'],['0','3'],['r^2/3','sqrt(18-r^2)']],
+ steps:['Ya dada en cilíndricas — se carga tal cual: θ∈[0,2π], r∈[0,3], z∈[r²/3, √(18−r²)].',
+        'Verificá primero que las superficies no se crucen mal en r=3: r²/3=3 y √(18−9)=3 — coinciden justo en r=3, la región cierra bien.',
+        'No tiene primitiva elemental corta en r a mano; se resuelve numéricamente (o con capas) — usar la calculadora es exactamente el punto de este ejercicio.'],
+ answerExact:'≈ 60.9836 (numérico)', answerNum:60.9836171856},
+{n:18, ref:'Ej. 48', coord:'cil', title:'Rectangulares → cilíndricas', mode:'G1',
+ fExpr:'r^2', bounds:[['-pi/2','pi/2'],['0','1'],['0','r*cos(theta)']],
+ steps:['Región original: −1≤y≤1, 0≤x≤√(1−y²), 0≤z≤x — medio disco derecho con techo z=x.',
+        'En cilíndricas: x=r cosθ ≥0 ⇒ θ∈[−π/2,π/2]; r∈[0,1]; z∈[0, r cosθ].',
+        'Integrando x²+y²=r² (antes del jacobiano); con jacobiano: r³.',
+        '∫∫∫ r³ dz dr dθ = 0.4 exactamente.'],
+ answerExact:'2/5', answerNum:0.4},
+{n:19, ref:'Ej. 50a', coord:'esf', title:'Evaluación directa en esféricas', mode:'H',
+ fExpr:'1', bounds:[['0','pi'],['0','pi/2'],['0','2*cos(phi)']],
+ steps:['Es exactamente la integral que corrige el archivo 2 del TP3 (la figura de apoyo del ejercicio 50).',
+        'Ya está en la forma estándar dρ dφ dθ — se carga directo: θ∈[0,π], φ∈[0,π/2], ρ∈[0,2cosφ].',
+        '∫∫∫ ρ²senφ dρ dφ dθ, integrando en ρ primero: (1/3)(2cosφ)³senφ, luego en φ y θ.',
+        'Resultado limpio: 2π/3.'],
+ answerExact:'2π/3', answerNum:2.0943951024},
+{n:20, ref:'Ej. 52b', coord:'esf', title:'Sólido "de barquillo": esfera + cono', mode:'H',
+ fExpr:'1', bounds:[['0','2*pi'],['0','pi/4'],['0','2*cos(phi)']],
+ steps:['Esfera ρ=2cosφ (radio 1, centrada en (0,0,1)); cono z=√(x²+y²) equivale a φ=π/4.',
+        '"Abajo la esfera, arriba el cono" en esta figura clásica de Thomas es la parte de la bola encerrada dentro del cono φ≤π/4 (forma de cucurucho).',
+        'θ∈[0,2π], φ∈[0,π/4], ρ∈[0,2cosφ].',
+        'Resultado: exactamente π.'],
+ answerExact:'π', answerNum:3.1415926536},
+{n:21, ref:'Ej. 53', coord:'esf', title:'Volumen de la esfera ρ=2 en los 3 sistemas', mode:'H',
+ fExpr:'1', bounds:[['0','2*pi'],['0','pi'],['0','2']],
+ steps:['Esféricas (la más directa): θ∈[0,2π], φ∈[0,π], ρ∈[0,2] ⇒ V=(4/3)π(2)³=32π/3.',
+        'Cilíndricas (equivalente, cargala en modo G1): θ∈[0,2π], r∈[0,2], z∈[−√(4−r²),√(4−r²)] — da el mismo número.',
+        'Rectangulares es el mismo sólido con 3 raíces anidadas — mucho más largo a mano; sirve para ver por qué se elige coordenadas adaptadas a la simetría.'],
+ answerExact:'32π/3', answerNum:33.5103216383},
+{n:22, ref:'Ej. 59c', coord:'rect', title:'Cambio de variables con jacobiano no trivial', mode:'A',
+ fExpr:'(2*((x+y)/3)^2 - ((x+y)/3)*((y-2*x)/3) - ((y-2*x)/3)^2) * (1/3)',
+ bounds:[['-1','2'],['4','7']],
+ steps:['u=x−y, v=2x+y ⇒ despejando: x=(u+v)/3, y=(v−2u)/3.',
+        'Jacobiano: ∂(x,y)/∂(u,v) = det[[1/3,1/3],[−2/3,1/3]] = 1/9+2/9 = 1/3.',
+        'El paralelogramo (rectas y=−2x+4, y=−2x+7, y=x−2, y=x+1) se transforma en el RECTÁNGULO u∈[−1,2], v∈[4,7] — ese es el punto del cambio de variables.',
+        'En la calculadora, los campos "x" e "y" del modo Rectángulo representan acá u y v: el integrando ya tiene sustituidos x=(u+v)/3, y=(v−2u)/3 y multiplicado por |J|=1/3.'],
+ answerExact:'33/4 = 8.25', answerNum:8.25},
+{n:23, ref:'Ej. 60', coord:'esf', title:'Momento de inercia — esfera sólida (a=2)', mode:'H',
+ fExpr:'rho^2*sin(phi)^2', bounds:[['0','2*pi'],['0','pi'],['0','2']],
+ steps:['I (respecto a un diámetro, δ=1) = ∫∫∫(x²+y²) dV; en esféricas x²+y²=ρ²sen²φ.',
+        'Cargar f=ρ²sen²φ (el jacobiano ρ²senφ se agrega solo) ⇒ integrando efectivo ρ⁴sen³φ.',
+        'Fórmula conocida: I=(8/15)πa⁵; con a=2 da 256π/15.'],
+ answerExact:'256π/15 (a=2)', answerNum:53.6165146213},
+{n:24, ref:'Ej. 61', coord:'cil', title:'Momento de inercia — cono (h=3, a=2)', mode:'G2',
+ fExpr:'r^2', bounds:[['0','2*pi'],['0','3'],['0','(2/3)*z']],
+ steps:['Cono con vértice en el origen, eje z, radio a=2 en z=h=3 ⇒ en altura z el radio es (2/3)z.',
+        'Orden r-interior (G2): θ∈[0,2π], z∈[0,3], r∈[0,(2/3)z]. Integrando I_z=∫∫∫r² dV ⇒ f=r² (jacobiano r agregado solo).',
+        'Masa del cono: M=(1/3)πa²h=4π. Fórmula: I_z=(3/10)Ma²=(3/10)(4π)(4)=4.8π.'],
+ answerExact:'4.8π  (h=3, a=2)', answerNum:15.0796447372},
+{n:25, ref:'Ej. 66', coord:'rect', title:'Masa con δ=2x', mode:'F',
+ fExpr:'2*x', bounds:[['1','2'],['0','2-x'],['0','2-x-y']],
+ steps:['Primer octante, x≥1, dentro de x+y+z=2 ⇒ x∈[1,2] (en x=2 el plano toca y=z=0).',
+        'Para x fijo: y∈[0,2−x] (con z=0); para (x,y): z∈[0,2−x−y].',
+        'M=∫₁²∫₀^(2−x)∫₀^(2−x−y) 2x dz dy dx = 5/12.'],
+ answerExact:'5/12', answerNum:0.4166666667},
+{n:26, ref:'Ej. 67', coord:'esf', title:'Cono bajo un plano (esféricas/cilíndricas ya dadas)', mode:'F',
+ fExpr:'1', bounds:[['-1','1'],['-sqrt(1-x^2)','sqrt(1-x^2)'],['sqrt(x^2+y^2)','1']],
+ steps:['Región: disco unitario en la base, entre el cono z=√(x²+y²) (abajo) y el plano z=1 (arriba) — clásico "cono de helado" plano.',
+        'En esféricas el cono es φ=π/4 y el plano z=1 es ρ=secφ; en cilíndricas es directo r∈[0,1], z∈[r,1].',
+        'V=∫₀^(2π)∫₀¹∫ᵣ¹ r dz dr dθ = π/3.'],
+ answerExact:'π/3', answerNum:1.0471975512},
+{n:27, ref:'Ej. 71', coord:'cil', title:'Agujero cilíndrico en una esfera', mode:'G2',
+ fExpr:'1', bounds:[['0','2*pi'],['-sqrt(3)','sqrt(3)'],['1','sqrt(4-z^2)']],
+ steps:['Esfera de radio 2, agujero cilíndrico de radio 1 centrado en el eje z (el TP3 la da ya lista, con z∈[0,√3] y un factor ×2 por simetría).',
+        'Acá se cargan los límites simétricos z∈[−√3,√3] directamente (evita el factor ×2 aparte).',
+        'Resultado clásico del "napkin ring": V=(4/3)π·(semialtura)³ = (4/3)π(√3)³ = 4√3π — depende SOLO de la semialtura de la banda, no de los radios por separado.'],
+ answerExact:'4√3 π', answerNum:21.7655923708},
+{n:28, ref:'Ej. 72', coord:'rect', title:'Función Gamma — Γ(1/2)=√π', mode:'A',
+ fExpr:'—', bounds:[['—','—'],['—','—']],
+ steps:['Γ(1/2)=∫₀^∞ t^(−1/2)e^(−t) dt. Sustituyendo y=√t (t=y², dt=2y dy): =2∫₀^∞ e^(−y²) dy.',
+        'Por Ej.18/32, ∫₀^∞ e^(−y²)dy=√π/2 ⇒ Γ(1/2)=2·(√π/2)=√π.',
+        'No se verifica con los modos de esta calculadora: es 1D con una singularidad integrable en t=0 (t^(−1/2)→∞) que el método numérico de acá no maneja bien. La verificación real es el cruce con Ej.18/32, ya confirmado ahí.'],
+ answerExact:'√π', answerNum:1.7724538509, noCalc:true},
+{n:29, ref:'Ej. 78a', coord:'esf', title:'Verificar equivalencia rectangular ↔ polar-mixta', mode:'F',
+ fExpr:'(x^2+y^2)*z', bounds:[['0','1'],['0','sqrt(1-x^2)'],['x^2+y^2','x+y']],
+ steps:['Afirmación del TP3: la integral en (x,y,z) con z entre x²+y² y x+y, es igual a la misma en (r,θ,z) con z entre r² y r(senθ+cosθ).',
+        'Se puede cargar el LADO IZQUIERDO en el modo F (arriba) o el LADO DERECHO en modo G1 con f=r²·z, θ∈[0,π/2], r∈[0,1], z∈[r², r(senθ+cosθ)] — ambos dan el mismo número.',
+        'Esa coincidencia numérica ES la demostración de que la igualdad es VERDADERA (r²=x²+y², y x+y=r cosθ+r senθ).'],
+ answerExact:'≈ 0.116058 (ambos lados)', answerNum:0.1160582568},
+{n:30, ref:'Ej. 79', coord:'rect', title:'Segundo momento de área — viga rectangular b=4, h=6', mode:'A',
+ fExpr:'y^2', bounds:[['-2','2'],['-3','3']],
+ steps:['Sección rectangular b×h centrada en el eje neutro: x∈[−b/2,b/2], y∈[−h/2,h/2].',
+        'I_x=∬y² dx dy = b·∫₋ₕ/₂^(h/2) y² dy = b·h³/12.',
+        'Con b=4, h=6: I_x=4·216/12=72. (I_y se obtiene igual, cargando f=x² con los mismos límites.)'],
+ answerExact:'b·h³/12 = 72  (b=4,h=6)', answerNum:72},
+];
+
+function renderExamples(){
+  const host = document.getElementById('exList');
+  host.innerHTML = '';
+  EXAMPLES.forEach(ex=>{
+    const card = document.createElement('div');
+    card.className = 'ex-card';
+    const shownAns = fmtNum(ex.answerNum);
+    const stepsHTML = ex.steps.map(s=>`<li>${s}</li>`).join('');
+    const loadBtn = ex.noCalc ? '' : `<button class="ghost" data-load="${ex.n}">Cargar en calculadora</button>`;
+    const notation = ex.noCalc ? `Γ(1/2) = ∫₀^∞ t^(−1/2) e^(−t) dt` :
+      notationHTML(ex.mode, ex.fExpr, ex.bounds);
+    card.innerHTML = `
+      <div class="ex-head">
+        <div class="ex-num">${ex.n}</div>
+        <div class="ex-title">${chipHTML(ex.coord)} &nbsp;${ex.ref} — ${ex.title}</div>
+        <div class="ex-ans">≈ ${shownAns}</div>
+      </div>
+      <div class="ex-body">
+        <div class="notation">${notation}</div>
+        <ol>${stepsHTML}</ol>
+        <div class="final">Resultado: <b>${ex.answerExact}</b> &nbsp;(≈ ${shownAns})</div>
+        ${loadBtn}
+      </div>`;
+    card.querySelector('.ex-head').addEventListener('click', ()=> card.classList.toggle('open'));
+    host.appendChild(card);
+  });
+  host.querySelectorAll('[data-load]').forEach(btn=>{
+    btn.addEventListener('click', (evt)=>{
+      evt.stopPropagation();
+      const ex = EXAMPLES.find(e=>e.n===Number(btn.dataset.load));
+      if(!ex || ex.noCalc) return;
+      if(ex.mode==='F'){                       /* los ejemplos están escritos en dz dy dx */
+        applyOrder('xyz');
+        document.getElementById('orderSelect').value='xyz';
+      }
+      applyMode(ex.mode, {fExpr:ex.fExpr, boundExprs:ex.bounds});
+      document.querySelector('nav.tabs button[data-tab="calc"]').click();
+      document.getElementById('btnCalc').click();
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+}
+renderExamples();
+
+/* re-render color-dependent bits on theme change (for live OS theme switches) */
+if (window.matchMedia){
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', ()=>{
+    const cfg = readCurrentConfig();
+    if (document.getElementById('plot3d').children.length){
+      try{ if (MODES[cfg.modeKey].vars.length===2) plotSurface(cfg); else plotSolidSurface(cfg);}catch(e){}
+    }
+  });
+}
+/* ============================================================
+   Campos vectoriales — R² y R³
+   Reutiliza el mismo renderer: las flechas y las líneas de campo
+   son primitivas más en la lista que el pintor ya ordena.
+   ============================================================ */
+let FDIM = 2;
+
+function fieldInputs(){
+  return {
+    dim: FDIM,
+    P: document.getElementById('fP').value.trim(),
+    Q: document.getElementById('fQ').value.trim(),
+    R: document.getElementById('fR').value.trim(),
+    lo: compileExpr(document.getElementById('fDomLo').value, [])([]),
+    hi: compileExpr(document.getElementById('fDomHi').value, [])([]),
+    arrows: document.getElementById('fArrows').checked,
+    lines: document.getElementById('fLines').checked,
+    squash: document.getElementById('fNorm').checked
+  };
+}
+
+function buildField(cfg){
+  const vars = cfg.dim===2 ? ['x','y'] : ['x','y','z'];
+  const cP = compileExpr(cfg.P, vars), cQ = compileExpr(cfg.Q, vars);
+  const cR = cfg.dim===3 ? compileExpr(cfg.R, vars) : null;
+  return (x,y,z)=>{
+    const v = cfg.dim===2 ? [x,y] : [x,y,z];
+    let p,q,r;
+    try{ p=cP(v); }catch(e){ p=NaN; }
+    try{ q=cQ(v); }catch(e){ q=NaN; }
+    try{ r=cR?cR(v):0; }catch(e){ r=NaN; }
+    return [isFinite(p)?p:0, isFinite(q)?q:0, isFinite(r)?r:0];
+  };
+}
+
+/* línea de campo: RK4 sobre el campo NORMALIZADO
+   (paso uniforme en longitud de arco, no en tiempo) */
+function streamline(F, p0, hStep, nSteps, inBox){
+  const pts=[p0.slice()];
+  let p=p0.slice();
+  const unit = q => {
+    const v=F(q[0],q[1],q[2]); const L=Math.hypot(v[0],v[1],v[2]);
+    return L<1e-12 ? null : [v[0]/L, v[1]/L, v[2]/L];
+  };
+  for(let i=0;i<nSteps;i++){
+    const k1=unit(p); if(!k1) break;
+    const a=[p[0]+k1[0]*hStep/2, p[1]+k1[1]*hStep/2, p[2]+k1[2]*hStep/2];
+    const k2=unit(a); if(!k2) break;
+    const b=[p[0]+k2[0]*hStep/2, p[1]+k2[1]*hStep/2, p[2]+k2[2]*hStep/2];
+    const k3=unit(b); if(!k3) break;
+    const c=[p[0]+k3[0]*hStep, p[1]+k3[1]*hStep, p[2]+k3[2]*hStep];
+    const k4=unit(c); if(!k4) break;
+    const q=[ p[0]+hStep*(k1[0]+2*k2[0]+2*k3[0]+k4[0])/6,
+              p[1]+hStep*(k1[1]+2*k2[1]+2*k3[1]+k4[1])/6,
+              p[2]+hStep*(k1[2]+2*k2[2]+2*k3[2]+k4[2])/6 ];
+    if(!isFinite(q[0])||!isFinite(q[1])||!isFinite(q[2])) break;
+    if(!inBox(q)) break;
+    pts.push(q); p=q;
+  }
+  return pts;
+}
+
+/* divergencia y rotor numéricos (diferencias centradas) en un punto */
+function divCurl(F, p, hh){
+  const d=(i,j)=>{ const a=p.slice(), b=p.slice(); a[j]+=hh; b[j]-=hh;
+    return (F(a[0],a[1],a[2])[i] - F(b[0],b[1],b[2])[i])/(2*hh); };
+  const div = d(0,0)+d(1,1)+(FDIM===3 ? d(2,2) : 0);
+  const curl = [ d(2,1)-d(1,2), d(0,2)-d(2,0), d(1,0)-d(0,1) ];
+  return {div, curl};
+}
+
+function plotField(){
+  const cfg = fieldInputs();
+  if(!(cfg.hi > cfg.lo)) throw new Error('el dominio debe ir de menor a mayor');
+  const F = buildField(cfg);
+  const L0 = cfg.lo, L1 = cfg.hi, span = L1-L0;
+  const n = cfg.dim===2 ? 17 : 7;
+  const step = span/n;
+  const inBox = q => q[0]>=L0-1e-9 && q[0]<=L1+1e-9 && q[1]>=L0-1e-9 && q[1]<=L1+1e-9
+                  && (cfg.dim===2 || (q[2]>=L0-1e-9 && q[2]<=L1+1e-9));
+
+  /* muestreo en la grilla */
+  const samples=[], mags=[];
+  const at = i => L0 + step*(i+0.5);
+  for(let i=0;i<n;i++) for(let j=0;j<n;j++){
+    if(cfg.dim===2){
+      const x=at(i), y=at(j), v=F(x,y,0), M=Math.hypot(v[0],v[1]);
+      if(isFinite(M)){ samples.push({p:[x,y,0], v, M}); mags.push(M); }
+    } else {
+      for(let k=0;k<n;k++){
+        const x=at(i), y=at(j), z=at(k), v=F(x,y,z), M=Math.hypot(v[0],v[1],v[2]);
+        if(isFinite(M)){ samples.push({p:[x,y,z], v, M}); mags.push(M); }
+      }
+    }
+  }
+  if(!samples.length) throw new Error('el campo no se pudo evaluar en el dominio elegido');
+
+  const mLo=quantile(mags,0.02), mHi=quantile(mags,0.98);
+  const mRef=Math.max(1e-12, mHi);
+  const mSpan=Math.max(1e-12, mHi-mLo);
+  const ramp=[ mixRGB(hex2rgb(cssVar('--accent')), hex2rgb(cssVar('--panel')), 0.5),
+               mixRGB(hex2rgb(cssVar('--warm')), [0,0,0], 0.1) ];
+  const prims=[];
+
+  if(cfg.arrows){
+    const Lmax = step*0.92;
+    for(const s of samples){
+      if(s.M < 1e-12) continue;
+      const t = Math.max(0, Math.min(1, (s.M-mLo)/mSpan));
+      const len = cfg.squash
+        ? Lmax*Math.min(1, Math.sqrt(s.M/mRef))       /* comprimida: √|F| */
+        : Lmax*Math.min(1, s.M/mRef);                 /* proporcional a |F| */
+      const u=[s.v[0]/s.M, s.v[1]/s.M, s.v[2]/s.M];
+      const a=[s.p[0]-u[0]*len/2, s.p[1]-u[1]*len/2, s.p[2]-u[2]*len/2];
+      const b=[s.p[0]+u[0]*len/2, s.p[1]+u[1]*len/2, s.p[2]+u[2]*len/2];
+      prims.push({ seg:[a,b], col:mixRGB(ramp[0],ramp[1],t), alpha:0.95, width:1.25 });
+    }
+  }
+
+  if(cfg.lines){
+    const seeds=[];
+    if(cfg.dim===2){
+      const ns=7;
+      for(let i=0;i<ns;i++) for(let j=0;j<ns;j++)
+        seeds.push([L0+span*(i+0.5)/ns, L0+span*(j+0.5)/ns, 0]);
+    } else {
+      for(let k=0;k<45;k++)
+        seeds.push([L0+Math.random()*span, L0+Math.random()*span, L0+Math.random()*span]);
+    }
+    const hStep = span/110;
+    for(const s of seeds){
+      const nSt = cfg.dim===2 ? 150 : 105;
+      const fwd = streamline(F, s,  hStep, nSt, inBox);
+      const bwd = streamline(F, s, -hStep, nSt, inBox);
+      const path = bwd.slice(1).reverse().concat(fwd);
+      if(path.length < 6) continue;
+      const mid = path[Math.floor(path.length/2)];
+      const vm = F(mid[0],mid[1],mid[2]);
+      const t = Math.max(0, Math.min(1, (Math.hypot(vm[0],vm[1],vm[2])-mLo)/mSpan));
+      prims.push({ path, col:mixRGB(ramp[0],ramp[1],t), alpha:cfg.arrows?0.5:0.82, width:1.15 });
+    }
+  }
+  if(!prims.length){
+    if(mHi < 1e-12) throw new Error('el campo vale 0 en todo el dominio: no hay nada que dibujar');
+    if(!cfg.arrows && !cfg.lines) throw new Error('activá vectores o líneas de campo');
+    throw new Error('no se generaron trazos: probá con otro dominio');
+  }
+
+  const box = cfg.dim===2
+    ? { x0:L0,x1:L1, y0:L0,y1:L1, z0:0,z1:0, cx:(L0+L1)/2, cy:(L0+L1)/2, cz:0, s:span/2 }
+    : buildBox([L0,L1],[L0,L1],[L0,L1]);
+
+  if(cfg.dim===2){ VIEW.yaw=0; VIEW.pitch=Math.PI/2; }
+  else if(SCENE && SCENE.flat){ VIEW.yaw=-2.0; VIEW.pitch=0.38; }
+
+  SCENE = { prims, box, kind:'field', host:'plotField', flat:cfg.dim===2,
+            labels:{x:'x', y:'y', z:'z'} };
+  drawScene();
+
+  /* divergencia y rotor numéricos en el centro */
+  const c=[ (L0+L1)/2, (L0+L1)/2, cfg.dim===3?(L0+L1)/2:0 ];
+  const dc = divCurl(F, c, span*1e-4);
+  const f = v => (Math.abs(v)<1e-9?'0':v.toFixed(4).replace(/0+$/,'').replace(/\.$/,''));
+  const box2 = document.getElementById('fieldCalc');
+  box2.style.display='block';
+  box2.innerHTML = '<div class="notation">En el centro del dominio, por diferencias centradas: '
+    + '<b>div F = '+f(dc.div)+'</b> &nbsp;·&nbsp; <b>rot F = ('
+    + f(dc.curl[0])+', '+f(dc.curl[1])+', '+f(dc.curl[2])+')</b>'
+    + (cfg.dim===2 ? ' — en R² sólo la componente z del rotor es no nula.' : '') + '</div>';
+
+  document.getElementById('fieldNote').textContent = cfg.dim===2
+    ? 'Plano xy fijo. El color de cada vector y de cada línea es la magnitud |F|; la rueda o el pellizco acercan.'
+    : 'Arrastrá para rotar, rueda o pellizco para acercar. El color es la magnitud |F|.';
+}
+
+document.querySelectorAll('.grpsel [data-fdim]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    FDIM = Number(b.dataset.fdim);
+    document.getElementById('fd2').classList.toggle('on', FDIM===2);
+    document.getElementById('fd3').classList.toggle('on', FDIM===3);
+    document.getElementById('fRfield').style.display = FDIM===3 ? '' : 'none';
+  });
+});
+document.getElementById('fd2').classList.add('on');
+
+const FPRESETS = {
+  rot:   {P:'-y', Q:'x', R:'0',
+          note:'Rot. F = (−y, x): rot F = (0,0,2) y div F = 0. Gira sin expandirse; las líneas de campo son circunferencias.'},
+  div:   {P:'x^2', Q:'y', R:'0',
+          note:'Div. F = (x², y): div F = 2x+1, que CAMBIA con la posición — sumidero a la izquierda de x = −0,5 y fuente a la derecha. rot F = 0.'},
+  grad:  {P:'y', Q:'x', R:'0',
+          note:'Gradiente. F = (y, x) = ∇(xy): rot F = 0, o sea campo conservativo; la integral de línea no depende del camino.'},
+  fuente:{P:'x', Q:'y', R:'z',
+          note:'Fuente: div F = 2 en R² (3 en R³), positiva en todo punto. El campo nace y sale hacia afuera. rot F = 0.'},
+  sumidero:{P:'-x', Q:'-y', R:'-z',
+          note:'Sumidero: div F = −2 en R² (−3 en R³), negativa en todo punto. Mismo campo que la fuente con el signo cambiado: todo entra.'},
+  solen: {P:'x', Q:'-y', R:'0',
+          note:'Solenoidal: div F = 1 − 1 = 0. Lo que se estira en x se comprime en y, así que el flujo neto de cualquier volumen es nulo. Acá además rot F = 0: solenoidal no implica que gire.'}
+};
+document.querySelectorAll('[data-fpreset]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const pr = FPRESETS[b.dataset.fpreset];
+    document.getElementById('fP').value = pr.P;
+    document.getElementById('fQ').value = pr.Q;
+    document.getElementById('fR').value = pr.R;
+    try{ plotField(); document.getElementById('fieldNote').textContent = 'Campo de ejemplo — ' + pr.note; }
+    catch(e){ document.getElementById('fieldNote').textContent = 'No se pudo dibujar: '+e.message; }
+  });
+});
+document.getElementById('btnField').addEventListener('click', ()=>{
+  try{ plotField(); }
+  catch(e){ document.getElementById('fieldNote').textContent = 'No se pudo dibujar: '+e.message; }
+});
+
+
+/* ============================================================
+   Superficies, curvas y teoremas (Stokes y Gauss)
+   ============================================================ */
+/* Simpson compuesto de orden fijo: los integrandos acá salen de
+   diferencias finitas, y ese ruido impide converger a un adaptativo. */
+function simp1(f, a, b, n){
+  if(n%2) n++;
+  const hh=(b-a)/n; let s=f(a)+f(b);
+  for(let i=1;i<n;i++) s += f(a+i*hh) * (i%2 ? 4 : 2);
+  return s*hh/3;
+}
+function simp2(f, u0,u1, v0,v1, n){
+  return simp1(u => simp1(v => f(u,v), v0, v1, n), u0, u1, n);
+}
+
+function buildSurface(sx, sy, sz){
+  const X=compileExpr(sx,['u','v']), Y=compileExpr(sy,['u','v']), Z=compileExpr(sz,['u','v']);
+  const r = (u,v)=>[X([u,v]), Y([u,v]), Z([u,v])];
+  const hd = 1e-5;
+  const ru = (u,v)=>{ const a=r(u+hd,v), b=r(u-hd,v);
+    return [(a[0]-b[0])/(2*hd),(a[1]-b[1])/(2*hd),(a[2]-b[2])/(2*hd)]; };
+  const rv = (u,v)=>{ const a=r(u,v+hd), b=r(u,v-hd);
+    return [(a[0]-b[0])/(2*hd),(a[1]-b[1])/(2*hd),(a[2]-b[2])/(2*hd)]; };
+  const nrm = (u,v)=>{ const A=ru(u,v), B=rv(u,v);
+    return [A[1]*B[2]-A[2]*B[1], A[2]*B[0]-A[0]*B[2], A[0]*B[1]-A[1]*B[0]]; };
+  return { r, ru, rv, nrm };
+}
+function buildCurve(cx, cy, cz){
+  const X=compileExpr(cx,['t']), Y=compileExpr(cy,['t']), Z=compileExpr(cz,['t']);
+  const r = t=>[X([t]), Y([t]), Z([t])];
+  const hd = 1e-5;
+  const rp = t=>{ const a=r(t+hd), b=r(t-hd);
+    return [(a[0]-b[0])/(2*hd),(a[1]-b[1])/(2*hd),(a[2]-b[2])/(2*hd)]; };
+  return { r, rp };
+}
+function curlOf(F, p, hh){
+  const d=(i,j)=>{ const a=p.slice(), b=p.slice(); a[j]+=hh; b[j]-=hh;
+    return (F(a[0],a[1],a[2])[i]-F(b[0],b[1],b[2])[i])/(2*hh); };
+  return [d(2,1)-d(1,2), d(0,2)-d(2,0), d(1,0)-d(0,1)];
+}
+function divOf(F, p, hh){
+  const d=(i,j)=>{ const a=p.slice(), b=p.slice(); a[j]+=hh; b[j]-=hh;
+    return (F(a[0],a[1],a[2])[i]-F(b[0],b[1],b[2])[i])/(2*hh); };
+  return d(0,0)+d(1,1)+d(2,2);
+}
+const dot3 = (a,b)=> a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+
+const SG_PRESETS = {
+  esfera:    {sx:'sin(u)*cos(v)', sy:'sin(u)*sin(v)', sz:'cos(u)', u0:'0', u1:'pi', v0:'0', v1:'2*pi',
+              cerrada:true, note:'Esfera de radio 1, cerrada: sirve para Gauss.'},
+  semiesfera:{sx:'sin(u)*cos(v)', sy:'sin(u)*sin(v)', sz:'cos(u)', u0:'0', u1:'pi/2', v0:'0', v1:'2*pi',
+              cerrada:false, note:'Media esfera superior; su borde es la circunferencia unidad en z=0.'},
+  paraboloide:{sx:'u*cos(v)', sy:'u*sin(v)', sz:'1-u^2', u0:'0', u1:'1', v0:'0', v1:'2*pi',
+              cerrada:false, note:'Paraboloide z=1−x²−y² sobre el disco; mismo borde que la media esfera.'},
+  disco:     {sx:'u*cos(v)', sy:'u*sin(v)', sz:'0', u0:'0', u1:'1', v0:'0', v1:'2*pi',
+              cerrada:false, note:'Disco plano z=0; mismo borde otra vez.'},
+  cilindro:  {sx:'cos(v)', sy:'sin(v)', sz:'u', u0:'0', u1:'2', v0:'0', v1:'2*pi',
+              cerrada:false, note:'Manto cilíndrico de radio 1, sin tapas.'}
+};
+
+function sgInputs(){
+  const g=id=>document.getElementById(id).value.trim();
+  const num=e=>compileExpr(e,[])([]);
+  return {
+    sx:g('sSx'), sy:g('sSy'), sz:g('sSz'),
+    u0:num(g('sU0')), u1:num(g('sU1')), v0:num(g('sV0')), v1:num(g('sV1')),
+    cx:g('sCx'), cy:g('sCy'), cz:g('sCz'), t0:num(g('sT0')), t1:num(g('sT1')),
+    P:g('sP'), Q:g('sQ'), R:g('sR'),
+    showS:document.getElementById('sShowS').checked,
+    showN:document.getElementById('sShowN').checked,
+    showC:document.getElementById('sShowC').checked,
+    showT:document.getElementById('sShowT').checked,
+    showF:document.getElementById('sShowF').checked
+  };
+}
+
+function plotStokes(){
+  resetViewIfFlat();
+  const c = sgInputs();
+  const S = buildSurface(c.sx, c.sy, c.sz);
+  const C = buildCurve(c.cx, c.cy, c.cz);
+  const Pc=compileExpr(c.P,['x','y','z']), Qc=compileExpr(c.Q,['x','y','z']), Rc=compileExpr(c.R,['x','y','z']);
+  const F=(x,y,z)=>{ const v=[x,y,z];
+    const g=f=>{ let r; try{ r=f(v); }catch(e){ r=NaN; } return isFinite(r)?r:0; };
+    return [g(Pc), g(Qc), g(Rc)]; };
+
+  const NS = 34;
+  const prims=[];
+  const xs=[], ys=[], zs=[];
+  const lin=(a,b,i,n)=>a+(b-a)*i/n;
+
+  /* malla de la superficie */
+  const grid=[];
+  for(let i=0;i<=NS;i++){
+    const row=[];
+    for(let j=0;j<=NS;j++) row.push(S.r(lin(c.u0,c.u1,i,NS), lin(c.v0,c.v1,j,NS)));
+    grid.push(row);
+  }
+  for(const row of grid) for(const p of row) if(p.every(isFinite)){ xs.push(p[0]); ys.push(p[1]); zs.push(p[2]); }
+  if(!xs.length) throw new Error('la superficie no se pudo evaluar con esos rangos');
+
+  const scaleBox = Math.max(Math.max.apply(null,xs)-Math.min.apply(null,xs),
+                            Math.max.apply(null,ys)-Math.min.apply(null,ys),
+                            Math.max.apply(null,zs)-Math.min.apply(null,zs), 1e-9);
+  const colS = mixRGB(hex2rgb(cssVar('--cil')), hex2rgb(cssVar('--panel')), 0.32);
+  if(c.showS){
+    for(let i=0;i<NS;i++) for(let j=0;j<NS;j++){
+      const A=grid[i][j], B=grid[i+1][j], D=grid[i+1][j+1], E=grid[i][j+1];
+      if(![A,B,D,E].every(q=>q.every(isFinite))) continue;
+      prims.push({ v:[A,B,D,E], col:colS, alpha:c.showN||c.showF?0.82:0.95, shade:true });
+    }
+  }
+  /* vectores normales n = r_u × r_v */
+  if(c.showN){
+    const NN=9, L=scaleBox*0.17, colN=hex2rgb(cssVar('--esf'));
+    for(let i=0;i<=NN;i++) for(let j=0;j<=NN;j++){
+      const u=lin(c.u0,c.u1,i,NN), v=lin(c.v0,c.v1,j,NN);
+      const p=S.r(u,v), n=S.nrm(u,v), ln=Math.hypot(n[0],n[1],n[2]);
+      if(!p.every(isFinite) || !(ln>1e-12)) continue;
+      const q=[p[0]+n[0]/ln*L, p[1]+n[1]/ln*L, p[2]+n[2]/ln*L];
+      prims.push({ seg:[p,q], col:colN, alpha:0.95, width:1.3 });
+      xs.push(q[0]); ys.push(q[1]); zs.push(q[2]);
+    }
+  }
+  /* curva y sus tangentes */
+  if(c.showC || c.showT){
+    const NC=220, path=[];
+    for(let i=0;i<=NC;i++){ const p=C.r(lin(c.t0,c.t1,i,NC)); if(p.every(isFinite)){ path.push(p); xs.push(p[0]); ys.push(p[1]); zs.push(p[2]); } }
+    if(c.showC && path.length>3)
+      prims.push({ path, col:hex2rgb(cssVar('--warm')), alpha:1, width:2.4 });
+    if(c.showT){
+      const NT=16, L=scaleBox*0.15, colT=hex2rgb(cssVar('--warm'));
+      for(let i=0;i<NT;i++){
+        const t=lin(c.t0,c.t1,i,NT), p=C.r(t), d=C.rp(t), ld=Math.hypot(d[0],d[1],d[2]);
+        if(!p.every(isFinite) || !(ld>1e-12)) continue;
+        const q=[p[0]+d[0]/ld*L, p[1]+d[1]/ld*L, p[2]+d[2]/ld*L];
+        prims.push({ seg:[p,q], col:colT, alpha:1, width:1.7 });
+      }
+    }
+  }
+  /* campo vectorial de fondo */
+  if(c.showF){
+    const x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs);
+    const y0=Math.min.apply(null,ys), y1=Math.max.apply(null,ys);
+    const z0=Math.min.apply(null,zs), z1=Math.max.apply(null,zs);
+    const NF=5, colF=hex2rgb(cssVar('--rect'));
+    const step=Math.max((x1-x0),(y1-y0),(z1-z0))/(NF+1);
+    let mmax=1e-12;
+    const pts=[];
+    for(let i=0;i<=NF;i++) for(let j=0;j<=NF;j++) for(let k=0;k<=NF;k++){
+      const p=[lin(x0,x1,i,NF), lin(y0,y1,j,NF), lin(z0,z1,k,NF)];
+      const f=F(p[0],p[1],p[2]), M=Math.hypot(f[0],f[1],f[2]);
+      if(!isFinite(M)||M<1e-12) continue;
+      if(M>mmax) mmax=M;
+      pts.push({p,f,M});
+    }
+    for(const s of pts){
+      const len=step*0.85*Math.min(1, Math.sqrt(s.M/mmax));
+      const u=[s.f[0]/s.M, s.f[1]/s.M, s.f[2]/s.M];
+      prims.push({ seg:[s.p, [s.p[0]+u[0]*len, s.p[1]+u[1]*len, s.p[2]+u[2]*len]],
+                   col:colF, alpha:0.5, width:1 });
+    }
+  }
+  if(!prims.length) throw new Error('nada para dibujar: activá al menos una capa');
+
+  const box = buildBox(xs, ys, zs);
+  SCENE = { prims, box, kind:'stokes', host:'plotSG', labels:{x:'x', y:'y', z:'z'} };
+  drawScene();
+
+  /* ---------- los números ---------- */
+  const N = 120;
+  const hh = scaleBox*1e-4;
+  const area = simp2((u,v)=>{ const n=S.nrm(u,v); return Math.hypot(n[0],n[1],n[2]); }, c.u0,c.u1, c.v0,c.v1, N);
+  const flujo = simp2((u,v)=>{ const p=S.r(u,v); return dot3(F(p[0],p[1],p[2]), S.nrm(u,v)); }, c.u0,c.u1, c.v0,c.v1, N);
+  const fluxRot = simp2((u,v)=>{ const p=S.r(u,v); return dot3(curlOf(F,p,hh), S.nrm(u,v)); }, c.u0,c.u1, c.v0,c.v1, N);
+  const circ = simp1(t=>{ const p=C.r(t); return dot3(F(p[0],p[1],p[2]), C.rp(t)); }, c.t0, c.t1, 400);
+
+  const f=v=>{
+    if(!isFinite(v)) return '—';
+    const s=(Math.abs(v)<5e-7)?0:v;
+    return s.toFixed(5).replace(/0+$/,'').replace(/\.$/,'') || '0';
+  };
+  const relDif=(a,b)=>{
+    const d=Math.abs(a-b), s=Math.max(Math.abs(a),Math.abs(b),1e-12);
+    return d/s;
+  };
+  const okStokes = relDif(fluxRot, circ) < 2e-3;
+  const box2=document.getElementById('sgResult');
+  box2.style.display='block';
+  box2.innerHTML =
+    '<div class="sgrow"><span>Área de S</span><b>'+f(area)+'</b></div>'
+   +'<div class="sgrow"><span>Flujo &nbsp;∬<sub>S</sub> F·n dS</span><b>'+f(flujo)+'</b></div>'
+   +'<div class="sgline"></div>'
+   +'<div class="sgrow"><span>Stokes, lado superficie &nbsp;∬<sub>S</sub> (rot F)·n dS</span><b>'+f(fluxRot)+'</b></div>'
+   +'<div class="sgrow"><span>Stokes, lado curva &nbsp;∮<sub>C</sub> F·dr</span><b>'+f(circ)+'</b></div>'
+   +'<div class="sgverdict '+(okStokes?'ok':'bad')+'">'
+     + (okStokes
+        ? 'Coinciden: C es el borde de S con la orientación compatible, y Stokes se cumple.'
+        : 'No coinciden. O C no es el borde de S, o la orientación está invertida (probá cambiando t₁ por t₀), o la superficie no es la que creés.')
+   +'</div>';
+  const note = document.getElementById('sgNote');
+  note.textContent = 'La normal dibujada es n = r_u × r_v, en ese orden: si invertís u y v, se da vuelta y el flujo cambia de signo.';
+}
+
+document.querySelectorAll('[data-sgp]').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    const pr = SG_PRESETS[b.dataset.sgp];
+    const set=(id,v)=>{ document.getElementById(id).value=v; };
+    set('sSx',pr.sx); set('sSy',pr.sy); set('sSz',pr.sz);
+    set('sU0',pr.u0); set('sU1',pr.u1); set('sV0',pr.v0); set('sV1',pr.v1);
+    try{ plotStokes(); document.getElementById('sgNote').textContent = pr.note; }
+    catch(e){ document.getElementById('sgNote').textContent = 'No se pudo dibujar: '+e.message; }
+  });
+});
+document.getElementById('btnSG').addEventListener('click', ()=>{
+  try{ plotStokes(); }
+  catch(e){ document.getElementById('sgNote').textContent = 'No se pudo dibujar: '+e.message; }
+});
+
+</script>
+</body>
+</html>
