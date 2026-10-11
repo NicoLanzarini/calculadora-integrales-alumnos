@@ -402,6 +402,13 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
         <button class="ghost" data-fpreset="sumidero">Sumidero</button>
         <button class="ghost" data-fpreset="solen">Solenoidal</button>
       </div>
+      <div class="vizctl">
+        <span style="font-size:0.82rem;color:var(--ink-dim);">Física II:</span>
+        <button class="ghost" data-fpreset="hilos">2 hilos (B)</button>
+        <button class="ghost" data-fpreset="dipB">Dipolo magnético (B)</button>
+        <button class="ghost" data-fpreset="dipE">Dipolo eléctrico (E)</button>
+        <button class="ghost" data-fpreset="carga">Carga puntual (E)</button>
+      </div>
 
       <div id="plotField" style="margin-top:12px;"></div>
       <div class="viz-note" id="fieldNote">Elegí la dimensión, escribí las componentes y dibujá. En R³ se puede rotar; en R² la vista queda fija en el plano xy.</div>
@@ -2276,13 +2283,14 @@ function plotField(){
     ? 'Plano xy fijo. ' : 'Arrastrá para rotar, rueda o pellizco para acercar. ') + colorNote;
 }
 
+function setFieldDim(d){
+  FDIM = d;
+  document.getElementById('fd2').classList.toggle('on', FDIM===2);
+  document.getElementById('fd3').classList.toggle('on', FDIM===3);
+  document.getElementById('fRfield').style.display = FDIM===3 ? '' : 'none';
+}
 document.querySelectorAll('.grpsel [data-fdim]').forEach(b=>{
-  b.addEventListener('click', ()=>{
-    FDIM = Number(b.dataset.fdim);
-    document.getElementById('fd2').classList.toggle('on', FDIM===2);
-    document.getElementById('fd3').classList.toggle('on', FDIM===3);
-    document.getElementById('fRfield').style.display = FDIM===3 ? '' : 'none';
-  });
+  b.addEventListener('click', ()=> setFieldDim(Number(b.dataset.fdim)));
 });
 document.getElementById('fd2').classList.add('on');
 
@@ -2298,11 +2306,22 @@ const FPRESETS = {
   sumidero:{P:'-x', Q:'-y', R:'-z',
           note:'Sumidero: div F = −2 en R² (−3 en R³), negativa en todo punto. Mismo campo que la fuente con el signo cambiado: todo entra.'},
   solen: {P:'x', Q:'-y', R:'0',
-          note:'Solenoidal: div F = 1 − 1 = 0. Lo que se estira en x se comprime en y, así que el flujo neto de cualquier volumen es nulo. Acá además rot F = 0: solenoidal no implica que gire.'}
+          note:'Solenoidal: div F = 1 − 1 = 0. Lo que se estira en x se comprime en y, así que el flujo neto de cualquier volumen es nulo. Acá además rot F = 0: solenoidal no implica que gire.'},
+  /* Física II: todos tienen su fuente fuera del centro de la región,
+     así que div y rot en el centro deben dar 0 (ver test/ui.js) */
+  hilos: {dim:2, P:'-y/((x-1)^2+y^2)+y/((x+1)^2+y^2)', Q:'(x-1)/((x-1)^2+y^2)-(x+1)/((x+1)^2+y^2)', R:'0',
+          note:'Dos hilos rectos paralelos al eje z, en (1,0) y (−1,0), con corrientes opuestas y μ₀I/2π = 1. Cada hilo aporta B = (−y, x−a)/((x−a)²+y²) (regla de la mano derecha) y el total es la suma. Afuera de los hilos div B = 0 (no hay monopolos) y rot B = 0 (no hay corriente, ley de Ampère).'},
+  dipB:  {dim:3, P:'3*(z+1)*x/(x^2+y^2+(z+1)^2)^(5/2)', Q:'3*(z+1)*y/(x^2+y^2+(z+1)^2)^(5/2)', R:'3*(z+1)^2/(x^2+y^2+(z+1)^2)^(5/2)-1/(x^2+y^2+(z+1)^2)^(3/2)',
+          note:'Dipolo magnético con momento m = ẑ, centrado en (0,0,−1), y μ₀m/4π = 1: B = [3(m·r̂)r̂ − m]/r³. Las líneas son cerradas: salen por un polo y vuelven por el otro. div B = 0 en todo punto y rot B = 0 fuera del dipolo.'},
+  dipE:  {dim:3, P:'x/(x^2+y^2+(z-1)^2)^(3/2)-x/(x^2+y^2+(z+1)^2)^(3/2)', Q:'y/(x^2+y^2+(z-1)^2)^(3/2)-y/(x^2+y^2+(z+1)^2)^(3/2)', R:'(z-1)/(x^2+y^2+(z-1)^2)^(3/2)-(z+1)/(x^2+y^2+(z+1)^2)^(3/2)',
+          note:'Dipolo eléctrico: carga +1 en (0,0,1) y −1 en (0,0,−1), con k = 1: E = Σ qᵢ(r−rᵢ)/|r−rᵢ|³. Las líneas salen de la + y terminan en la −. Afuera de las cargas div E = 0 (Gauss) y rot E = 0, porque E es un gradiente.'},
+  carga: {dim:3, P:'x/(x^2+y^2+(z+1)^2)^(3/2)', Q:'y/(x^2+y^2+(z+1)^2)^(3/2)', R:'(z+1)/(x^2+y^2+(z+1)^2)^(3/2)',
+          note:'Carga puntual +1 en (0,0,−1), con k = 1: E = (r−r₀)/|r−r₀|³. Las líneas salen radialmente de la carga; en el centro E = (0,0,1). Afuera de la carga div E = 0 (ley de Gauss) y rot E = 0.'}
 };
 document.querySelectorAll('[data-fpreset]').forEach(b=>{
   b.addEventListener('click', ()=>{
     const pr = FPRESETS[b.dataset.fpreset];
+    if(pr.dim) setFieldDim(pr.dim);
     document.getElementById('fP').value = pr.P;
     document.getElementById('fQ').value = pr.Q;
     document.getElementById('fR').value = pr.R;

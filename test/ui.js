@@ -89,6 +89,29 @@ module.exports = function run(report) {
       'cuestionario completo con todas correctas', d.querySelector('.qtext').textContent);
   }
 
+  /* campos de Fisica II: cada ejemplo se dibuja, y como su fuente queda fuera
+     del centro de la region, div y rot en el centro tienen que dar 0.
+     Control: el preset Div (x^2, y) da div = 1 en el centro, o sea el criterio detecta. */
+  const enCentro = txt => {
+    const m = txt.match(/div F = (-?[\d.]+).*?rot F = \(([^)]*)\)/);
+    return m ? { div: parseFloat(m[1]), rot: m[2].split(',').map(parseFloat) } : null;
+  };
+  for (const id of ['hilos', 'dipB', 'dipE', 'carga']) {
+    d.querySelector(`[data-fpreset=${id}]`).click();
+    const nota = d.getElementById('fieldNote').textContent;
+    const c = enCentro(d.getElementById('fieldCalc').textContent);
+    report.check(!/No se pudo/.test(nota), `campo ${id} se dibuja`, nota);
+    report.check(c && Math.abs(c.div) < 1e-3 && c.rot.every(v => Math.abs(v) < 1e-3),
+      `campo ${id}: div y rot = 0 en el centro`, JSON.stringify(c));
+  }
+  d.querySelector('[data-fpreset=dipE]').click();
+  report.check(d.getElementById('fd3').classList.contains('on'), 'un ejemplo de 3D pasa a R³');
+  d.querySelector('[data-fpreset=hilos]').click();
+  report.check(d.getElementById('fd2').classList.contains('on'), 'el ejemplo de 2 hilos vuelve a R²');
+  d.querySelector('[data-fpreset=div]').click();
+  const cd = enCentro(d.getElementById('fieldCalc').textContent);
+  report.check(cd && Math.abs(cd.div - 1) < 1e-3, 'control: Div da 1 en el centro', JSON.stringify(cd));
+
   /* sin dependencias externas salvo las tipografias */
   const fs = require('fs'), path = require('path');
   const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
