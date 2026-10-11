@@ -54,6 +54,20 @@
 .keypad button:active{background:var(--accent);color:var(--accent-ink);}
 .keypad button.kvar{border-color:var(--accent);color:var(--accent);font-weight:600;}
 .keypad button.kdel{margin-left:auto;border-color:var(--err);color:var(--err);}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;}
+.qnum{font-family:var(--mono);font-size:0.78rem;color:var(--ink-dim);letter-spacing:0.04em;text-transform:uppercase;}
+.qscore{font-family:var(--mono);font-size:0.82rem;color:var(--accent);}
+.qtext{font-size:1.02rem;line-height:1.5;margin-bottom:14px;}
+.qopts{display:flex;flex-direction:column;gap:7px;}
+.qopt{text-align:left;padding:11px 13px;border:1px solid var(--line);border-radius:7px;
+  background:var(--panel);color:var(--ink);font-family:var(--sans);font-size:0.93rem;
+  line-height:1.4;cursor:pointer;}
+.qopt:hover:enabled{border-color:var(--accent);}
+.qopt.ok{border-color:var(--ok);background:color-mix(in srgb, var(--ok) 12%, var(--panel));font-weight:600;}
+.qopt.bad{border-color:var(--err);background:color-mix(in srgb, var(--err) 12%, var(--panel));}
+.qwhy{margin-top:13px;padding:12px 13px;border-left:2px solid var(--accent);
+  background:color-mix(in srgb, var(--accent) 7%, var(--panel));font-size:0.9rem;line-height:1.55;border-radius:0 6px 6px 0;}
+.qnav{margin-top:14px;}
 .sg3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
 .sg4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:5px;}
 .sg3 input,.sg4 input{width:100%;}
@@ -64,6 +78,52 @@
 .sgverdict{margin-top:9px;font-size:0.85rem;line-height:1.5;padding:9px 11px;border-radius:6px;}
 .sgverdict.ok{border-left:2px solid var(--ok);background:color-mix(in srgb, var(--ok) 10%, var(--panel));}
 .sgverdict.bad{border-left:2px solid var(--err);background:color-mix(in srgb, var(--err) 10%, var(--panel));}
+.iint{display:inline-flex;align-items:center;vertical-align:-0.42em;margin:0 1px 0 2px;}
+.iint .isym{font-size:1.85em;line-height:0.75;font-weight:400;}
+.iint .ilim{display:inline-flex;flex-direction:column;justify-content:center;
+  font-size:0.60em;line-height:1.18;margin-left:1px;font-family:var(--mono);}
+.iint .ilim .ihi{margin-bottom:0.12em;}
+.iint .ilim .ilo{margin-top:0.12em;}
+.mint{white-space:nowrap;}
+.splitbar{display:none;align-items:center;gap:8px;margin-top:10px;padding-top:10px;
+  border-top:1px solid var(--line);}
+.splitbar .chk{display:flex;align-items:center;gap:6px;font-size:0.84rem;color:var(--ink-dim);
+  border:1px solid var(--line);border-radius:6px;padding:5px 10px;cursor:pointer;white-space:nowrap;}
+.panesel{font-family:var(--sans);font-size:0.84rem;padding:5px 8px;border:1px solid var(--line);
+  border-radius:6px;background:var(--panel);color:var(--ink);}
+.splitsep{color:var(--line);}
+.splitlbl{font-size:0.82rem;color:var(--ink-dim);}
+@media (min-width:1040px){ .splitbar{display:flex;} }
+.wrap.split{display:block;}
+@media (min-width:1040px){
+  .wrap.split{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start;}
+}
+.wrap.split > header{grid-column:1 / -1;grid-row:1;}
+.wrap.split > footer{grid-column:1 / -1;grid-row:3;}
+.wrap.split > .tabpanel{display:none !important;}
+.wrap.split > .tabpanel.pane-a{display:block !important;grid-column:1;grid-row:2;}
+.wrap.split > .tabpanel.pane-b{display:none !important;}
+@media (min-width:1040px){
+  /* fila fija: si no, el panel de la columna izquierda que esté más abajo en el
+     documento que el de la derecha cae a la fila siguiente y quedan escalonados */
+  .wrap.split > .tabpanel.pane-b{display:block !important;grid-column:2;grid-row:2;}
+}
+.wrap.split nav.tabs{opacity:0.45;pointer-events:none;}
+.unit-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:9px;}
+.unit-head h3{font-size:1.02rem;font-weight:650;margin:0;letter-spacing:-0.01em;}
+.unit-count{font-family:var(--mono);font-size:0.76rem;color:var(--ink-dim);
+  border:1px solid var(--line);border-radius:999px;padding:2px 9px;white-space:nowrap;}
+.loadbtn{font-family:var(--sans);font-size:0.87rem;font-weight:600;padding:8px 14px;
+  border:0;border-radius:7px;background:var(--accent);color:var(--accent-ink);cursor:pointer;
+  margin-top:4px;}
+.loadbtn:hover{filter:brightness(1.08);}
+.loadbtn{margin-top:10px;background:var(--accent);color:var(--accent-ink);border:0;
+  font-family:var(--sans);font-size:0.88rem;font-weight:600;padding:9px 14px;
+  border-radius:7px;cursor:pointer;letter-spacing:0.01em;}
+.loadbtn:hover{filter:brightness(1.08);}
+.exact{font-family:var(--mono);font-size:0.78em;color:var(--warm);margin-left:8px;
+  font-weight:600;letter-spacing:0.01em;}
 .fdom{width:100%;}
 .grpsel{display:flex;gap:0;border:1px solid var(--line);border-radius:7px;overflow:hidden;width:100%;}
 .grpsel button{flex:1;padding:10px 6px;border:0;background:transparent;color:var(--ink-dim);
@@ -85,6 +145,8 @@ body{
   min-height:100vh;
 }
 .wrap{max-width:880px;margin:0 auto;padding:18px 16px 60px;}
+.wrap.wide{max-width:1500px;}
+.wrap.full{max-width:none;}
 header.top{padding:6px 2px 16px;border-bottom:1px solid var(--line);margin-bottom:16px;}
 h1{font-size:1.32rem;font-weight:700;margin:0 0 4px;letter-spacing:-0.01em;}
 .sub{color:var(--ink-dim);font-size:0.86rem;margin:0;max-width:60ch;}
@@ -182,9 +244,23 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
       <button data-tab="calc" class="active">Calculadora</button>
       <button data-tab="viz">Visualización 3D</button>
       <button data-tab="fields">Campos vectoriales</button>
-      <button data-tab="examples">Ejemplos (30)</button>
+      <button data-tab="examples">Ejemplos</button>
       <button data-tab="surfaces">Stokes y Gauss</button>
+      <button data-tab="practice">Práctica</button>
     </nav>
+    <div class="splitbar">
+      <label class="chk"><input type="checkbox" id="splitToggle"> Pantalla dividida</label>
+      <select id="paneA" class="panesel" aria-label="panel izquierdo"></select>
+      <span class="splitsep">│</span>
+      <select id="paneB" class="panesel" aria-label="panel derecho"></select>
+      <span class="splitsep">│</span>
+      <label for="widthSel" class="splitlbl">Ancho</label>
+      <select id="widthSel" class="panesel">
+        <option value="normal">Columna (880 px)</option>
+        <option value="wide" selected>Amplio (1500 px)</option>
+        <option value="full">Completo</option>
+      </select>
+    </div>
   </header>
 
   <!-- ===================== TAB: CALCULADORA ===================== -->
@@ -268,7 +344,8 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
         <button class="ghost" data-view="iso">Vista isométrica</button>
         <button class="ghost" data-view="top">Desde arriba</button>
         <button class="ghost" data-view="front">De frente</button>
-        <label class="chk"><input type="checkbox" id="halfCut"> Cortar por la mitad</label>
+        <label class="chk"><input type="checkbox" id="showGhost" checked> Superficies completas</label>
+        <label class="chk"><input type="checkbox" class="cscale" checked> Escala de colores</label>
         <button class="ghost" id="btnBig">Agrandar</button>
       </div>
       <div id="plot3d" style="margin-top:12px;"></div>
@@ -297,7 +374,7 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
       <div class="field" id="fRfield" style="display:none"><label for="fR">R (componente en z)</label>
         <input type="text" id="fR" value="0" spellcheck="false" autocapitalize="off"></div>
 
-      <div class="field"><label>Dominio (mismo rango en cada eje)</label>
+      <div class="field"><label>Región a dibujar (mismo rango en cada eje)</label>
         <div class="bnd-row">
           <input type="text" class="fdom" id="fDomLo" value="-2" spellcheck="false">
           <span class="bnd-sep">a</span>
@@ -307,8 +384,10 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
 
       <div class="vizctl">
         <label class="chk"><input type="checkbox" id="fArrows" checked> Vectores</label>
-        <label class="chk"><input type="checkbox" id="fLines" checked> Líneas de campo</label>
+        <label class="chk"><input type="checkbox" id="fLines" checked> Líneas de flujo</label>
         <label class="chk"><input type="checkbox" id="fNorm" checked> Longitud comprimida</label>
+        <label class="chk"><input type="checkbox" class="cscale" checked> Escala de colores</label>
+        <button class="ghost" id="btnBigF">Agrandar</button>
       </div>
 
       <button class="action" id="btnField" style="margin-top:10px">Dibujar campo</button>
@@ -329,9 +408,9 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
       <div id="fieldCalc" class="result" style="display:none"></div>
 
       <div class="help">
-        <b>Longitud comprimida:</b> la flecha se dibuja con longitud proporcional a √|F| recortada al paso de la grilla, y la magnitud real va en el color.
+        <b>Longitud comprimida:</b> la flecha se dibuja con longitud proporcional a √|F| recortada al paso de la grilla, y la magnitud real va en el color (si la escala de colores está activa).
         Sin esa compresión, un campo como <span class="math">F = (x, y)</span> dibuja las flechas del borde diez veces más largas que las del centro y el gráfico se vuelve ilegible.
-        <b>Las líneas de campo</b> se integran con Runge-Kutta de orden 4 sobre el campo normalizado, así el paso es uniforme en longitud de arco y no en tiempo.
+        <b>Las líneas de flujo</b> se integran con Runge-Kutta de orden 4 sobre el campo normalizado, así el paso es uniforme en longitud de arco y no en tiempo.
       </div>
     </div>
   </section>
@@ -376,6 +455,8 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
         <label class="chk"><input type="checkbox" id="sShowC" checked> Curva</label>
         <label class="chk"><input type="checkbox" id="sShowT" checked> Tangentes</label>
         <label class="chk"><input type="checkbox" id="sShowF"> Campo F</label>
+        <label class="chk"><input type="checkbox" class="cscale" checked> Escala de colores</label>
+        <button class="ghost" id="btnBigS">Agrandar</button>
       </div>
 
       <button class="action" id="btnSG" style="margin-top:10px">Dibujar y verificar</button>
@@ -392,17 +473,43 @@ footer.note{font-size:0.74rem;color:var(--ink-dim);text-align:center;margin-top:
     </div>
   </section>
 
+  <!-- ===================== TAB: PRÁCTICA ===================== -->
+  <section id="tab-practice" class="tabpanel">
+    <div class="panel">
+      <h2>Práctica de criterio</h2>
+      <div class="qwhy" style="margin-bottom:14px;border-left-color:var(--warm);background:color-mix(in srgb, var(--warm) 8%, var(--panel))"><b>Sin revisión de cátedra.</b> Las preguntas y sus explicaciones están redactadas a partir de parciales de 2019 y del TP3. Los valores numéricos citados están verificados, pero el criterio didáctico no fue revisado por los docentes.</div>
+      <p class="sub" style="margin-bottom:12px">Preguntas de decisión, no de desarrollo: si la integral representa un volumen, sobre qué plano se proyecta, qué recorrido angular corresponde, dónde se cortan dos superficies. Salidas de parciales viejos y del TP3.</p>
+      <div id="quizPlotWrap" style="display:none">
+        <div id="plotQuiz"></div>
+      </div>
+      <div id="quizHost"></div>
+    </div>
+  </section>
+
   <!-- ===================== TAB: EJEMPLOS ===================== -->
   <section id="tab-examples" class="tabpanel">
     <div class="panel">
-      <h2>30 ejemplos resueltos</h2>
-      <p class="sub" style="margin-bottom:10px">Extraídos del TP3. Cada uno indica región/planteo, técnica y resultado numérico validado. «Cargar» lo abre en la Calculadora.</p>
+      <h2>Ejemplos resueltos</h2>
+      <p class="sub" style="margin-bottom:14px">Cada uno indica región o planteo, técnica y resultado numérico validado. «Cargar en calculadora» lo abre en la pestaña Calculadora con la función y los límites ya puestos.</p>
+
+      <div class="unit-head">
+        <h3>Unidad 3 — Integrales múltiples</h3>
+        <span class="unit-count" id="u3count"></span>
+      </div>
+      <p class="sub" style="margin:0 0 10px">Extraídos del TP3: integrales dobles y triples, cambio de orden, polares, cilíndricas y esféricas, momentos y centros de masa.</p>
       <div id="exList"></div>
+
+      <div class="unit-head" style="margin-top:26px">
+        <h3>Unidad 4 — Integrales de línea y superficie</h3>
+        <span class="unit-count" id="u4count"></span>
+      </div>
+      <p class="sub" style="margin:0 0 10px">Del TP4 parte B: áreas de superficies, flujo, Stokes y divergencia. El botón los abre en la pestaña <b>Stokes y Gauss</b> con la parametrización y el campo ya cargados.</p>
+      <div id="exList4"></div>
     </div>
   </section>
 
 
-  <footer class="note">Motor: cuadratura de Simpson adaptativa (validada contra scipy en los 30 ejemplos, error relativo &lt; 2·10⁻⁷).</footer>
+  <footer class="note">Motor: cuadratura de Simpson adaptativa, validada contra scipy en los 30 ejemplos de la Unidad 3 (error relativo &lt; 2·10⁻⁷) y en los 10 ejemplos cargables de la Unidad 4.</footer>
 </div>
 
 <script>
@@ -503,12 +610,9 @@ document.querySelectorAll('nav.tabs button').forEach(btn=>{
     btn.classList.add('active');
     document.getElementById('tab-'+btn.dataset.tab).classList.add('active');
     /* un canvas en una pestaña oculta mide 0: al mostrarla hay que remedir y redibujar */
-    const HOST_OF = { viz:'plot3d', fields:'plotField', surfaces:'plotSG' };
+    const HOST_OF = { viz:'plot3d', fields:'plotField', practice:'plotQuiz', surfaces:'plotSG' };
     const wanted = HOST_OF[btn.dataset.tab];
-    if(typeof SCENE!=='undefined' && SCENE && wanted && (SCENE.host||'plot3d')===wanted){
-      if(window.requestAnimationFrame) window.requestAnimationFrame(()=>{ try{ drawScene(); }catch(e){} });
-      else { try{ drawScene(); }catch(e){} }
-    }
+    if(wanted && SCENES[wanted]) scheduleDraw(wanted);
   });
 });
 
@@ -554,6 +658,82 @@ function syncGroupButtons(){
   document.getElementById('grpDoble').classList.toggle('on', g==='doble');
   document.getElementById('grpTriple').classList.toggle('on', g==='triple');
 }
+/* ---------- pantalla dividida: dos paneles a la vez, mitad y mitad ---------- */
+const PANE_LABELS = { calc:'Calculadora', viz:'Visualización 3D', fields:'Campos vectoriales',
+                      examples:'Ejemplos', surfaces:'Stokes y Gauss', practice:'Práctica' };
+const PANE_HOST = { viz:'plot3d', fields:'plotField', surfaces:'plotSG', practice:'plotQuiz' };
+
+function fillPaneSelect(sel, chosen){
+  sel.innerHTML='';
+  [...document.querySelectorAll('nav.tabs button')].forEach(b=>{
+    const t=b.dataset.tab;
+    const o=document.createElement('option');
+    o.value=t; o.textContent=PANE_LABELS[t]||t;
+    if(t===chosen) o.selected=true;
+    sel.appendChild(o);
+  });
+}
+
+function applyWidthClasses(){
+  const wrap = document.querySelector('.wrap');
+  const v = document.getElementById('widthSel').value;
+  wrap.classList.toggle('wide', v==='wide');
+  wrap.classList.toggle('full', v==='full');
+}
+function redrawAll(){
+  /* el mapa de escenas se declara más abajo: en el arranque todavía no existe */
+  try{ Object.keys(SCENES).forEach(id=>{ if(SCENES[id]) scheduleDraw(id); }); }catch(e){}
+}
+function applyWidth(){ applyWidthClasses(); redrawAll(); }
+
+/* el panel ya elegido de un lado queda deshabilitado del otro: se ve por qué
+   no se puede, en vez de que la selección salte sola a otra cosa */
+function syncPaneOptions(changed){
+  const A = document.getElementById('paneA'), B = document.getElementById('paneB');
+  if(A.value===B.value){
+    /* por interfaz no debería pasar: la opción del otro lado está bloqueada.
+       Queda como red de seguridad; se mueve el lado que NO tocó el usuario. */
+    const otro = (changed==='A') ? B : A;
+    const libre = [...otro.options].map(o=>o.value).find(v=>v!==A.value || v!==B.value);
+    const cand = [...otro.options].map(o=>o.value).filter(v=>v!==(changed==='A'?A.value:B.value));
+    if(cand.length) otro.value = cand[0];
+  }
+  [...A.options].forEach(o=>{ o.disabled = (o.value===B.value); });
+  [...B.options].forEach(o=>{ o.disabled = (o.value===A.value); });
+}
+
+function applySplit(){
+  const on = document.getElementById('splitToggle').checked;
+  const wrap = document.querySelector('.wrap');
+  const A = document.getElementById('paneA'), B = document.getElementById('paneB');
+  document.querySelectorAll('.tabpanel').forEach(s=>s.classList.remove('pane-a','pane-b'));
+  wrap.classList.toggle('split', on);
+  syncPaneOptions();
+  if(!on){ return; }
+  const pa=document.getElementById('tab-'+A.value), pb=document.getElementById('tab-'+B.value);
+  if(pa) pa.classList.add('pane-a');
+  if(pb) pb.classList.add('pane-b');
+  /* cada panel mide distinto en media pantalla: hay que remedir y redibujar */
+  [A.value, B.value].forEach(t=>{
+    const hid = PANE_HOST[t];
+    try{ if(hid && SCENES[hid]) scheduleDraw(hid); }catch(e){}
+  });
+}
+
+fillPaneSelect(document.getElementById('paneA'), 'calc');
+fillPaneSelect(document.getElementById('paneB'), 'viz');
+document.getElementById('splitToggle').addEventListener('change', ()=>{
+  /* al dividir conviene ensanchar: dos columnas dentro de 880 px son dos columnas angostas */
+  const wsel = document.getElementById('widthSel');
+  if(document.getElementById('splitToggle').checked && wsel.value==='normal'){ wsel.value='wide'; }
+  applyWidth(); applySplit();
+});
+document.getElementById('paneA').addEventListener('change', ()=>{ syncPaneOptions('A'); applySplit(); });
+document.getElementById('paneB').addEventListener('change', ()=>{ syncPaneOptions('B'); applySplit(); });
+document.getElementById('widthSel').addEventListener('change', applyWidth);
+applyWidthClasses();
+syncPaneOptions();
+
 document.getElementById('orderSelect').addEventListener('change', (e)=>{
   applyOrder(e.target.value);
   applyMode('F');
@@ -893,6 +1073,65 @@ function notationHTML(modeKey, fExpr, boundExprs){
   return `${opSym} (${fExpr})${jacTxt} d(${m.vars.map(vshow).join(',')}),&nbsp; ${parts.join(',&nbsp; ')}`;
 }
 
+
+/* ============================================================
+   Forma exacta: intenta reconocer el resultado como fracción,
+   múltiplo racional de π, √2, √3, √5, √π, e o ln2.
+   Es un reconocimiento NUMÉRICO, no una demostración: se exige
+   que el candidato ajuste a 1e-8 relativo, bastante más fino que
+   el error del motor (2e-7), y aun así puede fallar en 1 de cada
+   2400 valores sin forma exacta. Por eso el decimal se muestra
+   siempre y la fracción va al lado, como sugerencia.
+   ============================================================ */
+function ratApprox(x, maxDen){
+  if(!isFinite(x)) return null;
+  const neg = x<0; x=Math.abs(x);
+  let h1=1,h0=0,k1=0,k0=1,b=x;
+  for(let i=0;i<24;i++){
+    const a=Math.floor(b);
+    const h2=a*h1+h0, k2=a*k1+k0;
+    if(k2>maxDen) break;
+    h0=h1;h1=h2;k0=k1;k1=k2;
+    const diff=b-a;
+    if(diff<1e-13) break;
+    b=1/diff;
+  }
+  if(k1===0) return null;
+  return {p:(neg?-h1:h1), q:k1};
+}
+const EXACT_BASES = [
+  {v:1,                    s:''},
+  {v:Math.PI,              s:'π'},
+  {v:Math.PI*Math.PI,      s:'π²'},
+  {v:Math.sqrt(2),         s:'√2'},
+  {v:Math.sqrt(3),         s:'√3'},
+  {v:Math.sqrt(5),         s:'√5'},
+  {v:Math.sqrt(Math.PI),   s:'√π'},
+  {v:Math.PI*Math.sqrt(2), s:'π√2'},
+  {v:Math.PI*Math.sqrt(3), s:'π√3'},
+  {v:Math.PI*Math.sqrt(5), s:'π√5'},
+  {v:Math.E,               s:'e'},
+  {v:Math.log(2),          s:'ln2'}
+];
+function exactForm(x, tol){
+  tol = tol || 1e-8;
+  if(!isFinite(x)) return null;
+  if(Math.abs(x)<1e-12) return '0';
+  for(const b of EXACT_BASES){
+    const f = ratApprox(x/b.v, 60);
+    if(!f || f.q===0 || Math.abs(f.p)>999) continue;
+    if(Math.abs((f.p/f.q)*b.v - x) > tol*Math.abs(x)) continue;
+    if(b.s===''){ return f.q===1 ? String(f.p) : (f.p+'/'+f.q); }
+    const num = (f.p===1 ? '' : (f.p===-1 ? '−' : String(f.p)));
+    return f.q===1 ? (num+b.s) : (num+b.s+'/'+f.q);
+  }
+  return null;
+}
+function exactTag(x){
+  const e = exactForm(x);
+  return e ? ' <span class="exact">= '+e+'</span>' : '';
+}
+
 /* ============================================================
    Calcular
    ============================================================ */
@@ -912,7 +1151,7 @@ document.getElementById('btnCalc').addEventListener('click', ()=>{
     if (shown===null){
       box.innerHTML = `<div class="result err"><div class="num">No se pudo evaluar en todo el dominio</div><div class="notation">Revisá que la función esté definida en toda la región (dominio, raíces de números negativos, límites coherentes).</div></div>`;
     } else {
-      box.innerHTML = `<div class="result"><div class="num">≈ ${shown}</div><div class="notation">${notationHTML(cfg.modeKey, cfg.fExpr, cfg.boundExprs)}</div></div>`;
+      box.innerHTML = `<div class="result"><div class="num">≈ ${shown}${exactTag(value)}</div><div class="notation">${notationHTML(cfg.modeKey, cfg.fExpr, cfg.boundExprs)}</div></div>`;
     }
   } catch(e){
     box.innerHTML = `<div class="result err"><div class="num">Error de sintaxis</div><div class="notation">${e.message}</div></div>`;
@@ -933,6 +1172,18 @@ function hex2rgb(h){
 function mixRGB(a,b,t){ return [a[0]+(b[0]-a[0])*t, a[1]+(b[1]-a[1])*t, a[2]+(b[2]-a[2])*t]; }
 function rgba(c,al){ return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+(al===undefined?1:al)+')'; }
 
+/* Rampa arcoíris (turbo). Se usa turbo y no el arcoíris clásico tipo jet
+   porque jet no es monótono en luminancia: inventa bordes donde el dato es
+   liso y aplana zonas donde cambia. Turbo tiene el mismo aspecto de arcoíris
+   pero con luminancia creciente, así que el orden de magnitudes se lee bien. */
+const TURBO = [[48,18,59],[70,107,227],[54,168,252],[24,214,203],[72,242,130],
+               [144,254,69],[204,235,39],[248,186,33],[251,124,20],[225,64,5],[122,4,3]];
+function turbo(t){
+  t = Math.max(0, Math.min(1, t));
+  const x = t*(TURBO.length-1), i = Math.min(TURBO.length-2, Math.floor(x));
+  return mixRGB(TURBO[i], TURBO[i+1], x-i);
+}
+
 /* rampa de color del modo: el extremo claro nunca llega al color del panel,
    para que un integrando constante no quede invisible sobre el fondo */
 function rampFor(modeKey){
@@ -941,20 +1192,64 @@ function rampFor(modeKey){
   return [ mixRGB(base, pan, 0.52), mixRGB(base, [0,0,0], 0.22) ];
 }
 
-const VIEW = { yaw:-2.0, pitch:0.38, zoom:1 };
+let VIEW = { yaw:-2.0, pitch:0.38, zoom:1 };
 let CANVAS_BIG = false;
+let COLOR_SCALE = true;
+let DRAGGING = false, DRAW_PENDING = false;
+
+/* Calidad alta en reposo, malla rala mientras se arrastra: sin esto, una
+   superficie de 15.000 caras da 4 cuadros por segundo al rotar. Además el
+   dibujo se agenda a un cuadro, así varios pointermove seguidos no encolan
+   varios redibujos. */
+const DRAW_Q = {};
+function scheduleDraw(host){
+  const id = host || (SCENE && SCENE.host) || 'plot3d';
+  if(DRAW_Q[id]) return;
+  DRAW_Q[id] = true;
+  const run = ()=>{ DRAW_Q[id] = false; try{ drawScene(id); }catch(e){} };
+  if(window.requestAnimationFrame) window.requestAnimationFrame(run); else run();
+}
 
 /* las escenas de R² fijan la cámara de frente al plano; al volver a una escena
    3D hay que devolverla a la vista isométrica o se ve todo desde arriba */
-function resetViewIfFlat(){
-  if(typeof SCENE!=='undefined' && SCENE && SCENE.flat){ VIEW.yaw=-2.0; VIEW.pitch=0.38; VIEW.zoom=1; }
+function resetViewIfFlat(host){
+  const id = host || 'plot3d';
+  const V = viewFor(id);
+  if(SCENES[id] && SCENES[id].flat){ V.yaw=-2.0; V.pitch=0.38; V.zoom=1; }
 }
+/* Una escena, un canvas y una cámara POR CONTENEDOR. Antes había una sola de
+   cada cosa, así que dos paneles gráficos a la vez era imposible: el segundo
+   le robaba el canvas al primero. SCENE/CANVAS/CTX/VIEW siguen existiendo
+   como "el panel activo" para no tener que tocar las funciones de dibujo. */
+const SCENES = {}, CANVASES = {}, CTXS = {}, VIEWS = {};
 let SCENE = null;      /* {prims:[...], box:{...}, labels:{...}} */
 let CANVAS = null, CTX = null;
 
+function viewFor(host){
+  if(!VIEWS[host]) VIEWS[host] = { yaw:-2.0, pitch:0.38, zoom:1 };
+  return VIEWS[host];
+}
+function activate(host){
+  SCENE  = SCENES[host]   || null;
+  CANVAS = CANVASES[host] || null;
+  CTX    = CTXS[host]     || null;
+  VIEW   = viewFor(host);
+}
+function setScene(obj){
+  const host = obj.host || 'plot3d';
+  obj.host = host;
+  SCENES[host] = obj;
+  activate(host);
+  return obj;
+}
+
 function ensureCanvas(hostId){
-  const host = document.getElementById(hostId || (SCENE && SCENE.host) || 'plot3d');
-  if (CANVAS && CANVAS.parentNode === host) return CANVAS;
+  const id = hostId || (SCENE && SCENE.host) || 'plot3d';
+  const host = document.getElementById(id);
+  if (CANVASES[id] && CANVASES[id].parentNode === host){
+    CANVAS = CANVASES[id]; CTX = CTXS[id];
+    return CANVAS;
+  }
   host.innerHTML = '';
   const cv = document.createElement('canvas');
   cv.style.width = '100%';
@@ -964,26 +1259,27 @@ function ensureCanvas(hostId){
   cv.style.cursor = 'grab';
   cv.style.borderRadius = '6px';
   host.appendChild(cv);
-  CANVAS = cv; CTX = cv.getContext('2d');
-  attachControls(cv);
+  CANVASES[id] = cv; CTXS[id] = cv.getContext('2d');
+  CANVAS = cv; CTX = CTXS[id];
+  attachControls(cv, id);
   if(window.requestAnimationFrame)
-    window.requestAnimationFrame(()=>{ if(SCENE) try{ drawScene(); }catch(e){} });
+    window.requestAnimationFrame(()=>{ if(SCENES[id]) try{ drawScene(id); }catch(e){} });
   if (window.ResizeObserver){
-    const ro = new window.ResizeObserver(()=>{ if(SCENE) drawScene(); });
+    const ro = new window.ResizeObserver(()=>{ if(SCENES[id]) drawScene(id); });
     ro.observe(cv);
   } else if (window.addEventListener){
-    window.addEventListener('resize', ()=>{ if(SCENE) drawScene(); });
+    window.addEventListener('resize', ()=>{ if(SCENES[id]) drawScene(id); });
   }
   return cv;
 }
 
-function attachControls(cv){
+function attachControls(cv, hostId){
   const pts = new Map();
   let lastX=0, lastY=0, lastDist=0;
   cv.addEventListener('pointerdown', e=>{
     pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
     if(cv.setPointerCapture) cv.setPointerCapture(e.pointerId);
-    lastX=e.clientX; lastY=e.clientY; cv.style.cursor='grabbing';
+    lastX=e.clientX; lastY=e.clientY; cv.style.cursor='grabbing'; DRAGGING=true;
   });
   cv.addEventListener('pointermove', e=>{
     if(!pts.has(e.pointerId)) return;
@@ -991,24 +1287,31 @@ function attachControls(cv){
     if(pts.size>=2){
       const a=[...pts.values()];
       const d=Math.hypot(a[0].x-a[1].x, a[0].y-a[1].y);
-      if(lastDist>0) VIEW.zoom = Math.min(14, Math.max(0.2, VIEW.zoom*(d/lastDist)));
+      const V2 = viewFor(hostId);
+      if(lastDist>0) V2.zoom = Math.min(20, Math.max(0.05, V2.zoom*(d/lastDist)));
       lastDist=d;
-    } else if (!(SCENE && SCENE.flat)) {
-      VIEW.yaw   += (e.clientX-lastX)*0.0115;
-      VIEW.pitch += (e.clientY-lastY)*0.0115;
-      VIEW.pitch = Math.max(-1.45, Math.min(1.45, VIEW.pitch));
+    } else if (!(SCENES[hostId] && SCENES[hostId].flat)) {
+      const V = viewFor(hostId);
+      V.yaw   += (e.clientX-lastX)*0.0115;
+      V.pitch += (e.clientY-lastY)*0.0115;
+      V.pitch = Math.max(-1.45, Math.min(1.45, V.pitch));
       lastX=e.clientX; lastY=e.clientY;
     }
-    if(SCENE) drawScene();
+    if(SCENES[hostId]) scheduleDraw(hostId);
   });
-  const up = e=>{ pts.delete(e.pointerId); if(pts.size<2) lastDist=0; cv.style.cursor='grab'; };
+  const up = e=>{ pts.delete(e.pointerId); if(pts.size<2) lastDist=0; cv.style.cursor='grab';
+    if(pts.size===0 && DRAGGING){ DRAGGING=false; if(SCENES[hostId]) scheduleDraw(hostId); } };
   cv.addEventListener('pointerup', up);
   cv.addEventListener('pointercancel', up);
   cv.addEventListener('pointerleave', up);
   cv.addEventListener('wheel', e=>{
     e.preventDefault();
-    VIEW.zoom = Math.min(14, Math.max(0.2, VIEW.zoom*Math.exp(-e.deltaY*0.0016)));
-    if(SCENE) drawScene();
+    const V3 = viewFor(hostId);
+    V3.zoom = Math.min(20, Math.max(0.05, V3.zoom*Math.exp(-e.deltaY*0.0016)));
+    DRAGGING = true;
+    clearTimeout(attachControls._z);
+    attachControls._z = setTimeout(()=>{ DRAGGING=false; if(SCENES[hostId]) scheduleDraw(hostId); }, 160);
+    if(SCENES[hostId]) scheduleDraw(hostId);
   }, {passive:false});
 }
 
@@ -1037,9 +1340,9 @@ function buildBox(xs, ys, zs){
 
 /* ---------- escena 1: superficie z=f sobre la región R (modos dobles) ---------- */
 function plotSurface(cfg){
-  resetViewIfFlat();
+  resetViewIfFlat(cfg.host||'plot3d');
   const ev = buildEvaluators(cfg.modeKey, cfg.fExpr, cfg.boundExprs);
-  const N1=44, N2=44;
+  const N1=88, N2=88;
   const P=[];                       /* P[i][j] = [x,y,z] o null */
   const zsAll=[];
   for(let i=0;i<=N1;i++){
@@ -1078,16 +1381,55 @@ function plotSurface(cfg){
     const a=P[i][j], b=P[i+1][j], c=P[i+1][j+1], d=P[i][j+1];
     if(!a||!b||!c||!d) continue;
     const A=[a[0],a[1],zc(a[2])], B=[b[0],b[1],zc(b[2])], C=[c[0],c[1],zc(c[2])], D=[d[0],d[1],zc(d[2])];
-    /* región R proyectada en z=0, para que se vea el recorte del dominio */
-    prims.push({ v:[[a[0],a[1],0],[b[0],b[1],0],[c[0],c[1],0],[d[0],d[1],0]],
-                 col:baseC, alpha:0.5, shade:false });
+    /* región R proyectada en z=0 (malla más gruesa: es sólo una sombra) */
+    if(i%3===0 && j%3===0 && i+3<=N1 && j+3<=N2){
+      const a3=P[i][j], b3=P[i+3][j], c3=P[i+3][j+3], d3=P[i][j+3];
+      if(a3&&b3&&c3&&d3)
+        prims.push({ v:[[a3[0],a3[1],0],[b3[0],b3[1],0],[c3[0],c3[1],0],[d3[0],d3[1],0]],
+                     col:baseC, alpha:0.5, shade:false });
+    }
     const t = flat ? 0.5 : ( (A[2]+B[2]+C[2]+D[2])/4 - zlo )/span;
-    prims.push({ v:[A,B,C,D], col:mixRGB(colLo,colHi,Math.max(0,Math.min(1,t))), alpha:0.97, shade:true });
+    prims.push({ v:[A,B,C,D],
+                 col: (flat || !COLOR_SCALE) ? mixRGB(colLo,colHi,0.55) : turbo(t),
+                 alpha:0.97, shade:true });
   }
-  SCENE = { prims, box, kind:'surface',
+  /* la superficie completa, apagada: se ve qué recorta la región R */
+  const gEl2 = document.getElementById('showGhost');
+  const wantGhost2 = (cfg.ghost !== undefined) ? cfg.ghost : !!(gEl2 && gEl2.checked);
+  if(wantGhost2){
+    try{
+      const dom = extendedDomain(cfg.modeKey, ev);
+      const NG = 46, colG = hex2rgb(cssVar('--ink-dim'));
+      const lin=(u,v,i,n)=>u+(v-u)*i/n;
+      const gg=[];
+      for(let i=0;i<=NG;i++){
+        const a=lin(dom.A[0],dom.A[1],i,NG), row=[];
+        for(let j=0;j<=NG;j++){
+          const b=lin(dom.B[0],dom.B[1],j,NG);
+          let z; try{ z=ev.rawF(a,b); }catch(e){ z=NaN; }
+          /* fuera de rango se descarta, no se aplasta: aplastarlo convertía
+             el paraboloide en una losa gris al nivel del piso */
+          if(!isFinite(z) || z < zlo-0.75*span || z > zhi+0.75*span){ row.push(null); continue; }
+          const xy=mapPoint2(cfg.modeKey,a,b);
+          row.push([xy[0], xy[1], z]);
+        }
+        gg.push(row);
+      }
+      for(let i=0;i<NG;i++) for(let j=0;j<NG;j++){
+        const A=gg[i][j],B=gg[i+1][j],C=gg[i+1][j+1],D=gg[i][j+1];
+        if(!A||!B||!C||!D) continue;
+        prims.push({ v:[A,B,C,D], col:colG, alpha:0.12, shade:false, ghost:true });
+        xs.push(A[0]); ys.push(A[1]); zs.push(A[2]);
+      }
+    }catch(e){}
+  }
+  const boxS = buildBox(xs, ys, zs);
+
+  setScene({ host: cfg.host || 'plot3d', prims, box:boxS, kind:'surface',
+            scale: (flat || !COLOR_SCALE) ? null : {lo:zlo, hi:zhi, label:'z = f'},
             labels:{x:'x', y:'y', z:'z = f'},
-            note:'Superficie z = f recortada a la región de integración R; abajo, en gris, la proyección de R sobre el plano xy.' };
-  drawScene();
+            note:'Superficie z = f recortada a la región de integración R; abajo, en gris, la proyección de R sobre el plano xy.' });
+  drawScene(SCENE.host);
   document.getElementById('vizNote').textContent = SCENE.note + ' Arrastrá para rotar, rueda o pellizco para acercar.';
 }
 
@@ -1105,11 +1447,78 @@ function mapPoint(modeKey, a, b, c){
   return [a, b, c];
 }
 
+/* ============================================================
+   Contexto: las superficies completas, tenues, alrededor del
+   sólido. El dominio de integración recorta un pedazo de
+   superficies que existen más allá de él (la esfera entera, el
+   plano entero); dibujarlas apagadas deja ver qué se está
+   recortando y qué queda afuera.
+   ============================================================ */
+function mapPoint2(modeKey, a, b){
+  if(modeKey==='D') return [b*Math.cos(a), b*Math.sin(a)];
+  if(modeKey==='C') return [b, a];
+  return [a, b];
+}
+
+function extendedDomain(modeKey, ev){
+  const vars = MODES[modeKey].vars;
+  let bLo=Infinity, bHi=-Infinity;
+  for(let i=0;i<=24;i++){
+    const a = ev.outerLo + (ev.outerHi-ev.outerLo)*i/24;
+    const g1=ev.g1(a), g2=ev.g2(a);
+    if(isFinite(g1)){ bLo=Math.min(bLo,g1); bHi=Math.max(bHi,g1); }
+    if(isFinite(g2)){ bLo=Math.min(bLo,g2); bHi=Math.max(bHi,g2); }
+  }
+  if(!isFinite(bLo)){ bLo=0; bHi=1; }
+  const ext = (name, lo, hi)=>{
+    if(name==='theta') return [0, 2*Math.PI];          /* la vuelta completa */
+    if(name==='phi')   return [0, Math.PI];            /* de polo a polo */
+    if(name==='r' || name==='rho') return [Math.min(0,lo), Math.max(hi*1.55, hi+1e-6)];
+    const c=(lo+hi)/2, s=(hi-lo)/2*1.9;                /* rectangulares: ensanchar */
+    return [c-s, c+s];
+  };
+  return { A: ext(vars[0], ev.outerLo, ev.outerHi), B: ext(vars[1], bLo, bHi) };
+}
+
+/* mallas tenues de las superficies que hacen de piso y techo, evaluadas
+   sobre el dominio ampliado y no sobre el de integración */
+function ghostPrims(modeKey, ev, center, radius, colGhost){
+  const dom = extendedDomain(modeKey, ev);
+  const NG = 40;
+  const out = [];
+  const lin=(a,b,i,n)=>a+(b-a)*i/n;
+  const far = p => {
+    const d = Math.hypot(p[0]-center[0], p[1]-center[1], p[2]-center[2]);
+    return !(d <= radius*2.3);
+  };
+  for(const which of [0,1]){
+    const grid=[];
+    for(let i=0;i<=NG;i++){
+      const a = lin(dom.A[0], dom.A[1], i, NG);
+      const row=[];
+      for(let j=0;j<=NG;j++){
+        const b = lin(dom.B[0], dom.B[1], j, NG);
+        let c; try{ c = which ? ev.h2(a,b) : ev.h1(a,b); }catch(e){ c = NaN; }
+        row.push(isFinite(c) ? mapPoint(modeKey, a, b, c) : null);
+      }
+      grid.push(row);
+    }
+    for(let i=0;i<NG;i++) for(let j=0;j<NG;j++){
+      const A=grid[i][j], B=grid[i+1][j], C=grid[i+1][j+1], D=grid[i][j+1];
+      if(!A||!B||!C||!D) continue;
+      if(!A.every(isFinite)||!B.every(isFinite)||!C.every(isFinite)||!D.every(isFinite)) continue;
+      if(far(A)||far(B)||far(C)||far(D)) continue;
+      out.push({ v:[A,B,C,D], col:colGhost, alpha:0.13, shade:false, ghost:true });
+    }
+  }
+  return out;
+}
+
 function plotSolidSurface(cfg){
-  resetViewIfFlat();
+  resetViewIfFlat(cfg.host||'plot3d');
   const ev = buildEvaluators(cfg.modeKey, cfg.fExpr, cfg.boundExprs);
   const A0 = ev.outerLo, A1 = ev.outerHi;
-  const N = 26;
+  const N = 46;
   const mp = (a,b,c)=>{
     const p = mapPoint(cfg.modeKey, a, b, c);
     let v; try{ v = ev.rawF(a,b,c); }catch(e){ v = 0; }
@@ -1177,23 +1586,44 @@ function plotSolidSurface(cfg){
       const nx=u[1]*v[2]-u[2]*v[1], ny=u[2]*v[0]-u[0]*v[2], nz=u[0]*v[1]-u[1]*v[0];
       if(Math.hypot(nx,ny,nz) < 1e-10*scaleRef*scaleRef) continue;
       const t = flat ? 0.5 : Math.max(0, Math.min(1, ((q00.v+q10.v+q11.v+q01.v)/4 - vlo)/span));
-      prims.push({ v:[A,B,C,D], col:mixRGB(ramp[0],ramp[1],t), alpha:0.97, shade:true });
+      prims.push({ v:[A,B,C,D],
+                   col: (flat || !COLOR_SCALE) ? mixRGB(ramp[0],ramp[1],0.55) : turbo(t),
+                   alpha:0.97, shade:true });
     }
   }
   if(!prims.length) throw new Error('no se pudo construir la superficie del sólido con esos límites');
 
-  SCENE = { prims, box, kind:'solid', labels:{x:'x', y:'y', z:'z'},
-            note:'Superficie del sólido D (las seis caras del dominio de integración llevadas al espacio). El color es el valor del integrando.' };
-  drawScene();
-  document.getElementById('vizNote').textContent = SCENE.note
-    + ' Marcá «Cortar por la mitad» para ver el interior. Arrastrá para rotar.';
+  const gEl = document.getElementById('showGhost');
+  const wantGhost = (cfg.ghost !== undefined) ? cfg.ghost : !!(gEl && gEl.checked);
+  if(wantGhost){
+    const ctr=[box.cx, box.cy, box.cz];
+    const rad=Math.max(box.x1-box.x0, box.y1-box.y0, box.z1-box.z0)/2;
+    const colG = hex2rgb(cssVar('--ink-dim'));
+    try{
+      const gp = ghostPrims(cfg.modeKey, ev, ctr, rad, colG);
+      for(const q of gp){
+        prims.push(q);
+        for(const v of q.v){ xs.push(v[0]); ys.push(v[1]); zs.push(v[2]); }
+      }
+    }catch(e){}
+  }
+  const box2 = buildBox(xs, ys, zs);
+
+  setScene({ host: cfg.host || 'plot3d', prims, box:box2, kind:'solid', labels:{x:'x', y:'y', z:'z'},
+            scale: (flat || !COLOR_SCALE) ? null : {lo:vlo, hi:vhi, label:'f'},
+            note:'Superficie del sólido D (las seis caras del dominio de integración llevadas al espacio).'+(COLOR_SCALE?' El color es el valor del integrando.':'') });
+  drawScene(SCENE.host);
+  document.getElementById('vizNote').textContent = SCENE.note + ' Arrastrá para rotar.';
 }
 
 
 /* ---------- dibujo ---------- */
-function drawScene(){
+function drawScene(hostOpt){
+  const id = hostOpt || (SCENE && SCENE.host) || 'plot3d';
+  activate(id);
   if(!SCENE) return;
-  const cv = ensureCanvas(SCENE.host), ctx = CTX;
+  if(!document.getElementById(id)) return;
+  const cv = ensureCanvas(id), ctx = CTX;
   const dpr = window.devicePixelRatio || 1;
   const w = cv.clientWidth || 600, h = cv.clientHeight || 340;
   if(cv.width !== Math.round(w*dpr) || cv.height !== Math.round(h*dpr)){
@@ -1213,12 +1643,15 @@ function drawScene(){
 
 
   const L=[0.35,-0.55,0.76];
-  const cutEl = document.getElementById('halfCut');
-  const cut = cutEl && cutEl.checked;
-  const keep = p => !cut || p[1] <= box.cy;      /* media sección: se quita y > centro */
   const items=[];
+  /* al arrastrar se dibuja 1 de cada STEP caras: la forma se sigue leyendo
+     y la rotación queda fluida; al soltar vuelve la malla completa */
+  const STEP = (DRAGGING && SCENE.prims.length > 2200)
+             ? Math.ceil(SCENE.prims.length/2200) : 1;
+  let __i = -1;
   for(const pr of SCENE.prims){
-    if(cut && pr.v && !pr.v.every(keep)) continue;
+    __i++;
+    if(STEP>1 && !pr.seg && !pr.path && (__i % STEP)) continue;
 
     if(pr.seg){                                   /* vector: tallo + cabeza */
       const A=toPx(pr.seg[0]), B=toPx(pr.seg[1]);
@@ -1240,7 +1673,7 @@ function drawScene(){
       }});
       continue;
     }
-    if(pr.path){                                  /* línea de campo */
+    if(pr.path){                                  /* línea de flujo */
       const S=pr.path.map(toPx);
       let d=0; for(const s of S) d+=s.d; d/=S.length;
       items.push({d, draw:()=>{
@@ -1297,6 +1730,32 @@ function drawFrame(ctx, box, toPx){
     ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke(); }
 }
 
+/* barra de color: sin escala de referencia el color no comunica magnitud */
+function drawColorBar(ctx, w, h){
+  const sc = SCENE && SCENE.scale;
+  if(!sc || !isFinite(sc.lo) || !isFinite(sc.hi)) return;
+  const BW = Math.min(150, w*0.36), BH = 9;
+  const x0 = w - BW - 10, y0 = h - 30;
+  for(let i=0;i<BW;i++){
+    ctx.fillStyle = rgba(turbo(i/(BW-1)), 1);
+    ctx.fillRect(x0+i, y0, 1.25, BH);
+  }
+  ctx.strokeStyle = rgba(hex2rgb(cssVar('--line')), 1); ctx.lineWidth=0.6;
+  ctx.strokeRect(x0, y0, BW, BH);
+  const fmt = v => {
+    const a=Math.abs(v);
+    if(a<1e-9) return '0';
+    if(a>=1000 || a<0.01) return v.toExponential(1);
+    return v.toFixed(a>=100?0:2).replace(/0+$/,'').replace(/\.$/,'');
+  };
+  ctx.font='9.5px "IBM Plex Mono", monospace';
+  ctx.fillStyle = rgba(hex2rgb(cssVar('--ink-dim')), 0.95);
+  ctx.textAlign='left';  ctx.fillText(fmt(sc.lo), x0, y0-3);
+  ctx.textAlign='right'; ctx.fillText(fmt(sc.hi), x0+BW, y0-3);
+  ctx.textAlign='center';ctx.fillText(sc.label, x0+BW/2, y0+BH+10);
+  ctx.textAlign='left';
+}
+
 /* leyenda al pie + triedro de orientación: nunca se superponen al dibujo */
 function drawLegend(ctx, box, w, h){
   const fmt = v => (Math.abs(v)<1e-9 ? '0' : (Math.abs(v)>=100 ? v.toFixed(0) : v.toFixed(2).replace(/0+$/,'').replace(/\.$/,'')));
@@ -1306,7 +1765,8 @@ function drawLegend(ctx, box, w, h){
   const L = SCENE.labels;
   ctx.fillText(L.x+' ∈ ['+fmt(box.x0)+', '+fmt(box.x1)+']   '
              + L.y+' ∈ ['+fmt(box.y0)+', '+fmt(box.y1)+']'
-             + (SCENE.flat ? '' : '   '+L.z+' ∈ ['+fmt(box.z0)+', '+fmt(box.z1)+']'), 8, h-8);
+             + (SCENE.flat ? '' : '   '+L.z+' ∈ ['+fmt(box.z0)+', '+fmt(box.z1)+']'), 8, h-6);
+  drawColorBar(ctx, w, h);
   if(SCENE.flat) return;
 
   /* triedro: los mismos ángulos de cámara, dibujado en la esquina */
@@ -1334,21 +1794,41 @@ function drawLegend(ctx, box, w, h){
 document.querySelectorAll('.vizctl [data-view]').forEach(b=>{
   b.addEventListener('click', ()=>{
     const v=b.dataset.view;
-    if(v==='iso'){ VIEW.yaw=-2.0; VIEW.pitch=0.38; }
-    else if(v==='top'){ VIEW.yaw=-2.0; VIEW.pitch=1.45; }
-    else { VIEW.yaw=0; VIEW.pitch=0.06; }
-    VIEW.zoom=1;
-    if(SCENE) drawScene();
+    const V = viewFor('plot3d');
+    if(v==='iso'){ V.yaw=-2.0; V.pitch=0.38; }
+    else if(v==='top'){ V.yaw=-2.0; V.pitch=1.45; }
+    else { V.yaw=0; V.pitch=0.06; }
+    V.zoom=1;
+    if(SCENES['plot3d']) drawScene('plot3d');
   });
 });
-document.getElementById('halfCut').addEventListener('change', ()=>{ if(SCENE) drawScene(); });
-document.getElementById('btnBig').addEventListener('click', (e)=>{
-  CANVAS_BIG = !CANVAS_BIG;
-  e.target.textContent = CANVAS_BIG ? 'Achicar' : 'Agrandar';
-  document.querySelectorAll('canvas').forEach(c=>{
-    c.style.height = CANVAS_BIG ? 'clamp(420px, 82vh, 900px)' : 'clamp(320px, 56vh, 520px)';
+document.querySelectorAll('.cscale').forEach(c=>{
+  c.addEventListener('change', ()=>{
+    COLOR_SCALE = c.checked;
+    document.querySelectorAll('.cscale').forEach(o=>{ o.checked = COLOR_SCALE; });
+    /* el color va dentro de cada cara y cada flecha: hay que rehacer las escenas */
+    try{ if(SCENES['plot3d'])    document.getElementById('btnPlot').click(); }catch(e){}
+    try{ if(SCENES['plotField']) document.getElementById('btnField').click(); }catch(e){}
+    try{ if(SCENES['plotSG'])    document.getElementById('btnSG').click(); }catch(e){}
   });
-  if(typeof SCENE!=='undefined' && SCENE) drawScene();
+});
+
+document.getElementById('showGhost').addEventListener('change', ()=>{
+  if(SCENE) document.getElementById('btnPlot').click(); });
+function toggleBig(){
+  CANVAS_BIG = !CANVAS_BIG;
+  ['btnBig','btnBigF','btnBigS'].forEach(id=>{
+    const b=document.getElementById(id);
+    if(b) b.textContent = CANVAS_BIG ? 'Achicar' : 'Agrandar';
+  });
+  document.querySelectorAll('canvas').forEach(c=>{
+    c.style.height = CANVAS_BIG ? 'clamp(420px, 88vh, 1000px)' : 'clamp(320px, 56vh, 520px)';
+  });
+  Object.keys(SCENES).forEach(id=>{ if(SCENES[id]) scheduleDraw(id); });
+}
+['btnBig','btnBigF','btnBigS'].forEach(id=>{
+  const b=document.getElementById(id);
+  if(b) b.addEventListener('click', toggleBig);
 });
 
 document.getElementById('btnPlot').addEventListener('click', ()=>{
@@ -1564,12 +2044,13 @@ const EXAMPLES = [
 function renderExamples(){
   const host = document.getElementById('exList');
   host.innerHTML = '';
+
   EXAMPLES.forEach(ex=>{
     const card = document.createElement('div');
     card.className = 'ex-card';
     const shownAns = fmtNum(ex.answerNum);
     const stepsHTML = ex.steps.map(s=>`<li>${s}</li>`).join('');
-    const loadBtn = ex.noCalc ? '' : `<button class="ghost" data-load="${ex.n}">Cargar en calculadora</button>`;
+    const loadBtn = ex.noCalc ? '' : `<button class="loadbtn" data-load="${ex.n}">Cargar en calculadora →</button>`;
     const notation = ex.noCalc ? `Γ(1/2) = ∫₀^∞ t^(−1/2) e^(−t) dt` :
       notationHTML(ex.mode, ex.fExpr, ex.bounds);
     card.innerHTML = `
@@ -1587,6 +2068,9 @@ function renderExamples(){
     card.querySelector('.ex-head').addEventListener('click', ()=> card.classList.toggle('open'));
     host.appendChild(card);
   });
+
+  const cEl = document.getElementById('u3count');
+  if(cEl) cEl.textContent = EXAMPLES.length + ' ejemplos';
   host.querySelectorAll('[data-load]').forEach(btn=>{
     btn.addEventListener('click', (evt)=>{
       evt.stopPropagation();
@@ -1616,7 +2100,7 @@ if (window.matchMedia){
 }
 /* ============================================================
    Campos vectoriales — R² y R³
-   Reutiliza el mismo renderer: las flechas y las líneas de campo
+   Reutiliza el mismo renderer: las flechas y las líneas de flujo
    son primitivas más en la lista que el pintor ya ordena.
    ============================================================ */
 let FDIM = 2;
@@ -1649,7 +2133,7 @@ function buildField(cfg){
   };
 }
 
-/* línea de campo: RK4 sobre el campo NORMALIZADO
+/* línea de flujo: RK4 sobre el campo NORMALIZADO
    (paso uniforme en longitud de arco, no en tiempo) */
 function streamline(F, p0, hStep, nSteps, inBox){
   const pts=[p0.slice()];
@@ -1687,10 +2171,10 @@ function divCurl(F, p, hh){
 
 function plotField(){
   const cfg = fieldInputs();
-  if(!(cfg.hi > cfg.lo)) throw new Error('el dominio debe ir de menor a mayor');
+  if(!(cfg.hi > cfg.lo)) throw new Error('la región debe ir de menor a mayor');
   const F = buildField(cfg);
   const L0 = cfg.lo, L1 = cfg.hi, span = L1-L0;
-  const n = cfg.dim===2 ? 17 : 7;
+  const n = cfg.dim===2 ? 21 : 9;
   const step = span/n;
   const inBox = q => q[0]>=L0-1e-9 && q[0]<=L1+1e-9 && q[1]>=L0-1e-9 && q[1]<=L1+1e-9
                   && (cfg.dim===2 || (q[2]>=L0-1e-9 && q[2]<=L1+1e-9));
@@ -1709,13 +2193,12 @@ function plotField(){
       }
     }
   }
-  if(!samples.length) throw new Error('el campo no se pudo evaluar en el dominio elegido');
+  if(!samples.length) throw new Error('el campo no se pudo evaluar en la región elegida');
 
   const mLo=quantile(mags,0.02), mHi=quantile(mags,0.98);
   const mRef=Math.max(1e-12, mHi);
   const mSpan=Math.max(1e-12, mHi-mLo);
-  const ramp=[ mixRGB(hex2rgb(cssVar('--accent')), hex2rgb(cssVar('--panel')), 0.5),
-               mixRGB(hex2rgb(cssVar('--warm')), [0,0,0], 0.1) ];
+
   const prims=[];
 
   if(cfg.arrows){
@@ -1729,23 +2212,23 @@ function plotField(){
       const u=[s.v[0]/s.M, s.v[1]/s.M, s.v[2]/s.M];
       const a=[s.p[0]-u[0]*len/2, s.p[1]-u[1]*len/2, s.p[2]-u[2]*len/2];
       const b=[s.p[0]+u[0]*len/2, s.p[1]+u[1]*len/2, s.p[2]+u[2]*len/2];
-      prims.push({ seg:[a,b], col:mixRGB(ramp[0],ramp[1],t), alpha:0.95, width:1.25 });
+      prims.push({ seg:[a,b], col: COLOR_SCALE ? turbo(t) : hex2rgb(cssVar('--accent')), alpha:0.95, width:1.25 });
     }
   }
 
   if(cfg.lines){
     const seeds=[];
     if(cfg.dim===2){
-      const ns=7;
+      const ns=9;
       for(let i=0;i<ns;i++) for(let j=0;j<ns;j++)
         seeds.push([L0+span*(i+0.5)/ns, L0+span*(j+0.5)/ns, 0]);
     } else {
-      for(let k=0;k<45;k++)
+      for(let k=0;k<95;k++)
         seeds.push([L0+Math.random()*span, L0+Math.random()*span, L0+Math.random()*span]);
     }
-    const hStep = span/110;
+    const hStep = span/170;
     for(const s of seeds){
-      const nSt = cfg.dim===2 ? 150 : 105;
+      const nSt = cfg.dim===2 ? 260 : 190;
       const fwd = streamline(F, s,  hStep, nSt, inBox);
       const bwd = streamline(F, s, -hStep, nSt, inBox);
       const path = bwd.slice(1).reverse().concat(fwd);
@@ -1753,12 +2236,12 @@ function plotField(){
       const mid = path[Math.floor(path.length/2)];
       const vm = F(mid[0],mid[1],mid[2]);
       const t = Math.max(0, Math.min(1, (Math.hypot(vm[0],vm[1],vm[2])-mLo)/mSpan));
-      prims.push({ path, col:mixRGB(ramp[0],ramp[1],t), alpha:cfg.arrows?0.5:0.82, width:1.15 });
+      prims.push({ path, col: COLOR_SCALE ? turbo(t) : hex2rgb(cssVar('--warm')), alpha:cfg.arrows?0.62:0.9, width:1.2 });
     }
   }
   if(!prims.length){
-    if(mHi < 1e-12) throw new Error('el campo vale 0 en todo el dominio: no hay nada que dibujar');
-    if(!cfg.arrows && !cfg.lines) throw new Error('activá vectores o líneas de campo');
+    if(mHi < 1e-12) throw new Error('el campo vale 0 en toda la región: no hay nada que dibujar');
+    if(!cfg.arrows && !cfg.lines) throw new Error('activá vectores o líneas de flujo');
     throw new Error('no se generaron trazos: probá con otro dominio');
   }
 
@@ -1766,12 +2249,14 @@ function plotField(){
     ? { x0:L0,x1:L1, y0:L0,y1:L1, z0:0,z1:0, cx:(L0+L1)/2, cy:(L0+L1)/2, cz:0, s:span/2 }
     : buildBox([L0,L1],[L0,L1],[L0,L1]);
 
-  if(cfg.dim===2){ VIEW.yaw=0; VIEW.pitch=Math.PI/2; }
+  const VF = viewFor('plotField');
+  if(cfg.dim===2){ VF.yaw=0; VF.pitch=Math.PI/2; }
   else if(SCENE && SCENE.flat){ VIEW.yaw=-2.0; VIEW.pitch=0.38; }
 
-  SCENE = { prims, box, kind:'field', host:'plotField', flat:cfg.dim===2,
-            labels:{x:'x', y:'y', z:'z'} };
-  drawScene();
+  setScene({ prims, box, kind:'field', host:'plotField', flat:cfg.dim===2,
+            scale: COLOR_SCALE ? {lo:mLo, hi:mHi, label:'|F|'} : null,
+            labels:{x:'x', y:'y', z:'z'} });
+  drawScene('plotField');
 
   /* divergencia y rotor numéricos en el centro */
   const c=[ (L0+L1)/2, (L0+L1)/2, cfg.dim===3?(L0+L1)/2:0 ];
@@ -1779,14 +2264,16 @@ function plotField(){
   const f = v => (Math.abs(v)<1e-9?'0':v.toFixed(4).replace(/0+$/,'').replace(/\.$/,''));
   const box2 = document.getElementById('fieldCalc');
   box2.style.display='block';
-  box2.innerHTML = '<div class="notation">En el centro del dominio, por diferencias centradas: '
+  box2.innerHTML = '<div class="notation">En el centro de la región dibujada, por diferencias centradas: '
     + '<b>div F = '+f(dc.div)+'</b> &nbsp;·&nbsp; <b>rot F = ('
     + f(dc.curl[0])+', '+f(dc.curl[1])+', '+f(dc.curl[2])+')</b>'
     + (cfg.dim===2 ? ' — en R² sólo la componente z del rotor es no nula.' : '') + '</div>';
 
-  document.getElementById('fieldNote').textContent = cfg.dim===2
-    ? 'Plano xy fijo. El color de cada vector y de cada línea es la magnitud |F|; la rueda o el pellizco acercan.'
-    : 'Arrastrá para rotar, rueda o pellizco para acercar. El color es la magnitud |F|.';
+  const colorNote = COLOR_SCALE
+    ? 'El color de cada vector y de cada línea es la magnitud |F|.'
+    : 'Escala de colores apagada: el color no codifica nada; la magnitud se lee sólo en la longitud de las flechas.';
+  document.getElementById('fieldNote').textContent = (cfg.dim===2
+    ? 'Plano xy fijo. ' : 'Arrastrá para rotar, rueda o pellizco para acercar. ') + colorNote;
 }
 
 document.querySelectorAll('.grpsel [data-fdim]').forEach(b=>{
@@ -1801,7 +2288,7 @@ document.getElementById('fd2').classList.add('on');
 
 const FPRESETS = {
   rot:   {P:'-y', Q:'x', R:'0',
-          note:'Rot. F = (−y, x): rot F = (0,0,2) y div F = 0. Gira sin expandirse; las líneas de campo son circunferencias.'},
+          note:'Rot. F = (−y, x): rot F = (0,0,2) y div F = 0. Gira sin expandirse; las líneas de flujo son circunferencias.'},
   div:   {P:'x^2', Q:'y', R:'0',
           note:'Div. F = (x², y): div F = 2x+1, que CAMBIA con la posición — sumidero a la izquierda de x = −0,5 y fuente a la derecha. rot F = 0.'},
   grad:  {P:'y', Q:'x', R:'0',
@@ -1828,6 +2315,174 @@ document.getElementById('btnField').addEventListener('click', ()=>{
   catch(e){ document.getElementById('fieldNote').textContent = 'No se pudo dibujar: '+e.message; }
 });
 
+/* ============================================================
+   Práctica conceptual: criterio, no cuentas.
+   ============================================================ */
+/* Integral con límites apilados: KaTeX necesitaría CSS y fuentes de un host
+   que la página no puede cargar, así que se arma con HTML y CSS propios. */
+function II(lo, hi){
+  return '<span class="iint"><span class="isym">∫</span><span class="ilim">'
+       + '<span class="ihi">'+hi+'</span><span class="ilo">'+lo+'</span></span></span>';
+}
+const DV = s => '<span class="mint">'+s+'</span>';
+
+const QUIZ = [
+{ q:'¿La integral '+II('0','1')+II('0','√(1−x²)')+II('x²+y²','2−x−y')+DV(' dz dy dx')+' representa el volumen de un sólido?',
+  opts:['Sí: los límites están bien escritos y el integrando es 1',
+        'No: para algunos (x, y) del cuarto de disco, f(x,y) = x²+y² queda por encima de g(x,y) = 2−x−y, así que el límite inferior de z supera al superior',
+        'Sí: su valor es el volumen encerrado entre el paraboloide y el plano sobre todo el cuarto de disco',
+        'No: el número que devuelve es negativo, y un volumen no puede serlo'],
+  correct:1,
+  why:'Las dos afirmaciones de la primera opción son ciertas —los límites están bien escritos y el integrando es 1— y aun así la respuesta es no: eso solo no alcanza. Lo que hace falta es que g(x,y) = 2−x−y, que entra como límite superior de z, sea mayor o igual que f(x,y) = x²+y², que entra como límite inferior, en TODO el cuarto de disco. No lo es: en (0,9 ; 0,4) vale g = 0,70 contra f = 0,97, y esto pasa en cerca del 16% de la región. Donde f > g la integral interior en z da negativo y resta. Dos consecuencias que conviene mirar: el resultado igual sale positivo, 0,5114, así que el signo no delata nada; y el volumen real encerrado entre las dos superficies es 0,5530, que no es ese número. La integral devuelve un valor perfectamente calculable que no mide ningún volumen.' },
+
+{ q:'Misma integral pero con techo 3−x−y: '+II('0','1')+II('0','√(1−x²)')+II('x²+y²','3−x−y')+DV(' dz dy dx')+'. ¿Representa un volumen?',
+  opts:['No, por la misma razón que antes',
+        'Sí: el máximo de x+y+x²+y² sobre el cuarto de disco vale 1+√2 ≈ 2,41, y es menor que 3',
+        'Sí, pero sólo donde x+y ≤ 1; fuera de ahí hay que partir la integral',
+        'Hay que calcularla y mirar si el resultado da positivo'],
+  correct:1,
+  why:'La condición a verificar es 3−x−y ≥ x²+y², o sea x+y+x²+y² ≤ 3. El máximo de esa expresión sobre el cuarto de disco se alcanza en el borde x²+y²=1 y vale 1+√2 ≈ 2,414, por debajo de 3. Entonces el plano queda por encima del paraboloide en toda la región y el sólido existe. Dos cosas que vale la pena separar: alcanzó con acotar, no hizo falta calcular la integral; y el signo del resultado no sirve como criterio —en la pregunta anterior el resultado era positivo y aun así no era un volumen.' },
+
+{ q:'¿Qué calcula '+II('0','1')+II('0','√(1−x²)')+II('x²+y²','2')+DV(' dz dy dx')+'?',
+  opts:['El área del cuarto de disco unitario',
+        'La masa de un sólido de densidad x²+y²',
+        'El volumen entre el paraboloide z=x²+y² y el plano z=2, sobre el cuarto de disco del primer cuadrante',
+        'El volumen de un cilindro de radio 1 y altura 2'],
+  correct:2,
+  why:'El integrando es 1, así que es un volumen. La base es el cuarto de disco (x de 0 a 1, y de 0 a √(1−x²), ambos positivos). El sólido va desde el paraboloide como piso hasta el plano z=2 como techo. No es el cilindro entero: el paraboloide le come la parte de abajo.',
+  scene:{modeKey:'F', fExpr:'1', boundExprs:[['0','1'],['0','sqrt(1-x^2)'],['x^2+y^2','2']]} },
+
+{ q:'En '+II('−1','1')+II('−√(1−x²)','√(1−x²)')+II('√(1−x²−z²)','4−x²−z²')+DV(' dy dz dx')+', ¿sobre qué plano se proyecta la región y quién hace de «altura»?',
+  opts:['Se proyecta sobre el plano xy, y la altura es z',
+        'Se proyecta sobre el plano xz, y la altura es y',
+        'Se proyecta sobre el plano yz, y la altura es x',
+        'No se proyecta: los tres límites son constantes'],
+  correct:1,
+  why:'Los diferenciales de afuera mandan: dz dx son los dos externos, así que la región plana vive en el plano xz (el disco x²+z² ≤ 1). El diferencial interno es dy, o sea que y es la variable de barrido: entra por la semiesfera y=√(1−x²−z²) y sale por el paraboloide y=4−x²−z². Si acá aplicás cilíndricas hay que adaptarlas: x=r cos θ, z=r sen θ, y queda como altura.' },
+
+{ q:'Sólido acotado abajo por la esfera ρ = 2cos φ y arriba por el cono z = √(x²+y²). ¿Qué recorrido de φ corresponde?',
+  opts:['0 ≤ φ ≤ π/4', 'π/4 ≤ φ ≤ π/2', '0 ≤ φ ≤ π/2', 'π/2 ≤ φ ≤ π'],
+  correct:1,
+  why:'El cono z=√(x²+y²) forma 45° con el eje z, o sea φ=π/4, y es el techo. La esfera ρ=2cos φ pasa por el origen y está centrada en (0,0,1); es el piso. Estar por debajo de esa esfera y por encima del cono deja φ entre π/4 y π/2. El volumen da π/3.',
+  scene:{modeKey:'H', fExpr:'1', boundExprs:[['0','2*pi'],['pi/4','pi/2'],['0','2*cos(phi)']]} },
+
+{ q:'En '+II('0','1')+II('x','√(2−x²)')+II('0','√(2−x²−y²)')+DV(' dz dy dx')+', la base está entre la recta y=x y la circunferencia x²+y²=2. ¿Qué recorrido de θ le corresponde en cilíndricas?',
+  opts:['0 ≤ θ ≤ π/4', 'π/4 ≤ θ ≤ π/2', '0 ≤ θ ≤ π/2', 'π/4 ≤ θ ≤ 3π/4'],
+  correct:1,
+  why:'y va DESDE la recta y=x HACIA la circunferencia, o sea que la región está por encima de y=x. La recta y=x es θ=π/4, y el límite x≥0 junto con y≥x lleva hasta el eje y, que es θ=π/2. Como la integral es triple y z queda como tercera variable, el sistema es cilíndricas: θ entre π/4 y π/2, r entre 0 y √2, z entre 0 y √(2−r²). Polares describiría sólo la base. Y conviene mirar el techo: z=√(2−x²−y²) es la esfera de radio √2, así que este sólido también sale en esféricas, con ρ de 0 a √2 y φ de 0 a π/2.',
+  scene:{modeKey:'H', fExpr:'1', boundExprs:[['pi/4','pi/2'],['0','pi/2'],['0','sqrt(2)']]} },
+
+{ q:'V = '+II('0','1')+II('0','y')+DV(' (x²+y²) dx dy')+' + '+II('1','2')+II('0','2−y')+DV(' (x²+y²) dx dy')+'. ¿Cuál es la misma integral con el orden invertido?',
+  opts:[II('0','1')+II('0','2−x')+DV(' (x²+y²) dy dx'),
+        II('0','1')+II('x','2−x')+DV(' (x²+y²) dy dx'),
+        II('0','2')+II('x','2−x')+DV(' (x²+y²) dy dx'),
+        II('0','1')+II('0','x')+DV(' (x²+y²) dy dx')],
+  correct:1,
+  why:'Las dos integrales describen un solo triángulo de vértices (0,0), (1,1) y (0,2): a la izquierda x=0, abajo la recta y=x, arriba la recta y=2−x. Integrando primero en y, se entra por y=x y se sale por y=2−x, con x de 0 a 1 (más allá de x=1 las dos rectas ya se cruzaron). Las dos integrales colapsan en una sola y ambas dan 4/3. Que dos integrales se conviertan en una es la señal típica de que valía la pena invertir.' },
+
+{ q:'Reescribir '+II('0','1')+II('−1','0')+II('0','y²')+DV(' dz dy dx')+' en el orden dy dz dx. ¿Cuáles son los límites de y?',
+  opts:['de 0 a √z', 'de −1 a −√z', 'de −√z a 0', 'de −1 a 0'],
+  correct:1,
+  why:'La región es 0 ≤ z ≤ y² con −1 ≤ y ≤ 0. Despejando: z ≤ y² con y negativo equivale a y ≤ −√z. Entonces, fijado z entre 0 y 1, la y va desde el borde fijo y=−1 hasta la superficie y=−√z (rama negativa, porque y ≤ 0). Verificación rápida: la integral de (1−√z) entre 0 y 1 da 1/3, igual que la original (∫ y² dy entre −1 y 0).  Si los dos órdenes no coinciden, la conversión está mal.' },
+
+{ q:'Un tanque con forma de paraboloide z = x²+y² se llena hasta la altura h. En cilíndricas, ¿cuáles son los límites?',
+  opts:['0≤θ≤2π, 0≤r≤h, 0≤z≤r²',
+        '0≤θ≤2π, 0≤r≤√h, r²≤z≤h',
+        '0≤θ≤2π, 0≤r≤√h, 0≤z≤r²',
+        '0≤θ≤2π, 0≤r≤h², r²≤z≤h'],
+  correct:1,
+  why:'El líquido está DENTRO del paraboloide: para cada r, z va desde la pared z=r² hasta la superficie libre z=h. El radio máximo sale de la intersección entre el paraboloide y la superficie libre: z=r² corta a z=h donde r²=h, de donde r=√h. El error frecuente es escribir r=h, que es quedarse con r² sin despejar la raíz. El volumen da πh²/2.',
+  scene:{modeKey:'G1', fExpr:'1', boundExprs:[['0','2*pi'],['0','sqrt(2)'],['r^2','2']]} },
+
+{ q:'Región acotada arriba por la esfera x²+y²+z²=2 y abajo por el paraboloide z=x²+y². ¿En qué altura se cortan?',
+  opts:['en z=2, con radio r=√2', 'en z=1, con radio r=1', 'en z=−2, con radio r=2', 'en z=√2, con radio r=1'],
+  correct:1,
+  why:'Con z=x²+y²=r² y la esfera r²+z²=2 queda z+z²=2, o sea z²+z−2=0, que factoriza (z+2)(z−1)=0. La raíz z=−2 se descarta porque el paraboloide tiene z≥0. Queda z=1 y por lo tanto r²=1, r=1. Descartar la raíz negativa por el sentido geométrico, y no por la cuenta, es la parte que se olvida.',
+  scene:{modeKey:'G1', fExpr:'1', boundExprs:[['0','2*pi'],['0','1'],['r^2','sqrt(2-r^2)']]} },
+
+{ q:'Al pasar ∫∫∫ con z entre el cono z=√(x²+y²) y el plano z=1 a coordenadas esféricas, ¿en qué se transforma el plano z=1?',
+  opts:['ρ = 1', 'ρ = sec φ', 'φ = π/4', 'ρ = cos φ'],
+  correct:1,
+  why:'En esféricas z = ρ cos φ, así que z=1 es ρ cos φ = 1, es decir ρ = sec φ. El cono, en cambio, sí es un ángulo fijo: φ = π/4. Que el techo dependa de φ es justo lo que hace incómodas las esféricas acá; en cilíndricas el mismo sólido queda r ≤ z ≤ 1 con r de 0 a 1, mucho más directo. Elegir el sistema es parte del ejercicio.' },
+
+{ q:'Para el volumen entre los paraboloides z = x²+y² y z = 8−(x²+y²), ¿hasta qué radio llega la región?',
+  opts:['r = 2', 'r = 4', 'r = 8', 'r = 2√2'],
+  correct:0,
+  why:'Igualando: 8−r² = r², o sea 2r² = 8 y r² = 4, con lo cual r=2. El error frecuente es despejar r²=8 y quedarse con r=2√2, olvidando que el r² aparece de los dos lados. Después z va de r² a 8−r² y el volumen da 16π.',
+  scene:{modeKey:'G1', fExpr:'1', boundExprs:[['0','2*pi'],['0','2'],['r^2','8-r^2']]} }
+];
+
+let QI = 0, QSCORE = 0, QANSWERED = false;
+
+function renderQuiz(){
+  const host = document.getElementById('quizHost');
+  if(!host) return;
+  const item = QUIZ[QI];
+  host.innerHTML =
+    '<div class="qhead"><span class="qnum">Pregunta '+(QI+1)+' de '+QUIZ.length+'</span>'
+    + '<span class="qscore">Aciertos: '+QSCORE+'</span></div>'
+    + '<div class="qtext">'+item.q+'</div>'
+    + '<div class="qopts" id="qopts"></div>'
+    + '<div id="qwhy"></div>'
+    + '<div class="qnav" id="qnav"></div>';
+  const opts = document.getElementById('qopts');
+  item.opts.forEach((o,i)=>{
+    const b=document.createElement('button');
+    b.type='button'; b.className='qopt'; b.innerHTML=o;
+    b.addEventListener('click', ()=>answerQuiz(i));
+    opts.appendChild(b);
+  });
+  document.getElementById('quizPlotWrap').style.display = item.scene ? '' : 'none';
+  QANSWERED = false;
+  if(item.scene){
+    try{
+      const qcfg = Object.assign({ghost:true, host:'plotQuiz'}, item.scene);
+      if(MODES[item.scene.modeKey].vars.length===2) plotSurface(qcfg);
+      else plotSolidSurface(qcfg);
+      drawScene('plotQuiz');
+    }catch(e){ document.getElementById('quizPlotWrap').style.display='none'; }
+  }
+}
+
+function answerQuiz(i){
+  if(QANSWERED) return;
+  QANSWERED = true;
+  const item = QUIZ[QI];
+  const btns = document.querySelectorAll('#qopts .qopt');
+  btns.forEach((b,k)=>{
+    if(k===item.correct) b.classList.add('ok');
+    else if(k===i) b.classList.add('bad');
+    b.disabled = true;
+  });
+  if(i===item.correct) QSCORE++;
+  document.querySelector('.qscore').textContent = 'Aciertos: '+QSCORE;
+  document.getElementById('qwhy').innerHTML =
+    '<div class="qwhy"><b>'+(i===item.correct?'Correcto.':'No.')+'</b> '+item.why+'</div>';
+  const nav = document.getElementById('qnav');
+  nav.innerHTML='';
+  const b=document.createElement('button');
+  b.type='button'; b.className='action';
+  b.textContent = (QI < QUIZ.length-1) ? 'Siguiente' : 'Ver resultado';
+  b.addEventListener('click', ()=>{
+    if(QI < QUIZ.length-1){ QI++; renderQuiz(); }
+    else finishQuiz();
+  });
+  nav.appendChild(b);
+}
+
+function finishQuiz(){
+  const host = document.getElementById('quizHost');
+  const pct = Math.round(100*QSCORE/QUIZ.length);
+  host.innerHTML = '<div class="qhead"><span class="qnum">Resultado</span></div>'
+    + '<div class="qtext">'+QSCORE+' de '+QUIZ.length+' ('+pct+'%)</div>'
+    + '<div class="qwhy">Las que fallaste no son errores de cuenta: son de criterio. '
+    + 'Volvé sobre esas y, si podés, armá el sólido en la pestaña de visualización antes de plantear nada.</div>'
+    + '<div class="qnav"><button type="button" class="action" id="qrestart">Empezar de nuevo</button></div>';
+  document.getElementById('quizPlotWrap').style.display='none';
+  document.getElementById('qrestart').addEventListener('click', ()=>{ QI=0; QSCORE=0; renderQuiz(); });
+}
+
+renderQuiz();
 
 /* ============================================================
    Superficies, curvas y teoremas (Stokes y Gauss)
@@ -1906,7 +2561,7 @@ function sgInputs(){
 }
 
 function plotStokes(){
-  resetViewIfFlat();
+  resetViewIfFlat('plotSG');
   const c = sgInputs();
   const S = buildSurface(c.sx, c.sy, c.sz);
   const C = buildCurve(c.cx, c.cy, c.cz);
@@ -1915,7 +2570,7 @@ function plotStokes(){
     const g=f=>{ let r; try{ r=f(v); }catch(e){ r=NaN; } return isFinite(r)?r:0; };
     return [g(Pc), g(Qc), g(Rc)]; };
 
-  const NS = 34;
+  const NS = 60;
   const prims=[];
   const xs=[], ys=[], zs=[];
   const lin=(a,b,i,n)=>a+(b-a)*i/n;
@@ -1943,7 +2598,7 @@ function plotStokes(){
   }
   /* vectores normales n = r_u × r_v */
   if(c.showN){
-    const NN=9, L=scaleBox*0.17, colN=hex2rgb(cssVar('--esf'));
+    const NN=12, L=scaleBox*0.17, colN=hex2rgb(cssVar('--esf'));
     for(let i=0;i<=NN;i++) for(let j=0;j<=NN;j++){
       const u=lin(c.u0,c.u1,i,NN), v=lin(c.v0,c.v1,j,NN);
       const p=S.r(u,v), n=S.nrm(u,v), ln=Math.hypot(n[0],n[1],n[2]);
@@ -1955,12 +2610,12 @@ function plotStokes(){
   }
   /* curva y sus tangentes */
   if(c.showC || c.showT){
-    const NC=220, path=[];
+    const NC=420, path=[];
     for(let i=0;i<=NC;i++){ const p=C.r(lin(c.t0,c.t1,i,NC)); if(p.every(isFinite)){ path.push(p); xs.push(p[0]); ys.push(p[1]); zs.push(p[2]); } }
     if(c.showC && path.length>3)
       prims.push({ path, col:hex2rgb(cssVar('--warm')), alpha:1, width:2.4 });
     if(c.showT){
-      const NT=16, L=scaleBox*0.15, colT=hex2rgb(cssVar('--warm'));
+      const NT=22, L=scaleBox*0.15, colT=hex2rgb(cssVar('--warm'));
       for(let i=0;i<NT;i++){
         const t=lin(c.t0,c.t1,i,NT), p=C.r(t), d=C.rp(t), ld=Math.hypot(d[0],d[1],d[2]);
         if(!p.every(isFinite) || !(ld>1e-12)) continue;
@@ -1974,7 +2629,7 @@ function plotStokes(){
     const x0=Math.min.apply(null,xs), x1=Math.max.apply(null,xs);
     const y0=Math.min.apply(null,ys), y1=Math.max.apply(null,ys);
     const z0=Math.min.apply(null,zs), z1=Math.max.apply(null,zs);
-    const NF=5, colF=hex2rgb(cssVar('--rect'));
+    const NF=7;
     const step=Math.max((x1-x0),(y1-y0),(z1-z0))/(NF+1);
     let mmax=1e-12;
     const pts=[];
@@ -1989,22 +2644,22 @@ function plotStokes(){
       const len=step*0.85*Math.min(1, Math.sqrt(s.M/mmax));
       const u=[s.f[0]/s.M, s.f[1]/s.M, s.f[2]/s.M];
       prims.push({ seg:[s.p, [s.p[0]+u[0]*len, s.p[1]+u[1]*len, s.p[2]+u[2]*len]],
-                   col:colF, alpha:0.5, width:1 });
+                   col: COLOR_SCALE ? turbo(Math.sqrt(s.M/mmax)) : hex2rgb(cssVar('--rect')), alpha:0.75, width:1.1 });
     }
   }
   if(!prims.length) throw new Error('nada para dibujar: activá al menos una capa');
 
   const box = buildBox(xs, ys, zs);
-  SCENE = { prims, box, kind:'stokes', host:'plotSG', labels:{x:'x', y:'y', z:'z'} };
-  drawScene();
+  setScene({ prims, box, kind:'stokes', host:'plotSG', labels:{x:'x', y:'y', z:'z'} });
+  drawScene('plotSG');
 
   /* ---------- los números ---------- */
-  const N = 120;
+  const N = 200;
   const hh = scaleBox*1e-4;
   const area = simp2((u,v)=>{ const n=S.nrm(u,v); return Math.hypot(n[0],n[1],n[2]); }, c.u0,c.u1, c.v0,c.v1, N);
   const flujo = simp2((u,v)=>{ const p=S.r(u,v); return dot3(F(p[0],p[1],p[2]), S.nrm(u,v)); }, c.u0,c.u1, c.v0,c.v1, N);
   const fluxRot = simp2((u,v)=>{ const p=S.r(u,v); return dot3(curlOf(F,p,hh), S.nrm(u,v)); }, c.u0,c.u1, c.v0,c.v1, N);
-  const circ = simp1(t=>{ const p=C.r(t); return dot3(F(p[0],p[1],p[2]), C.rp(t)); }, c.t0, c.t1, 400);
+  const circ = simp1(t=>{ const p=C.r(t); return dot3(F(p[0],p[1],p[2]), C.rp(t)); }, c.t0, c.t1, 800);
 
   const f=v=>{
     if(!isFinite(v)) return '—';
@@ -2015,20 +2670,22 @@ function plotStokes(){
     const d=Math.abs(a-b), s=Math.max(Math.abs(a),Math.abs(b),1e-12);
     return d/s;
   };
+  const useCurve = c.showC || c.showT;      /* sin curva no hay nada que comparar */
   const okStokes = relDif(fluxRot, circ) < 2e-3;
   const box2=document.getElementById('sgResult');
   box2.style.display='block';
   box2.innerHTML =
-    '<div class="sgrow"><span>Área de S</span><b>'+f(area)+'</b></div>'
-   +'<div class="sgrow"><span>Flujo &nbsp;∬<sub>S</sub> F·n dS</span><b>'+f(flujo)+'</b></div>'
-   +'<div class="sgline"></div>'
-   +'<div class="sgrow"><span>Stokes, lado superficie &nbsp;∬<sub>S</sub> (rot F)·n dS</span><b>'+f(fluxRot)+'</b></div>'
-   +'<div class="sgrow"><span>Stokes, lado curva &nbsp;∮<sub>C</sub> F·dr</span><b>'+f(circ)+'</b></div>'
-   +'<div class="sgverdict '+(okStokes?'ok':'bad')+'">'
-     + (okStokes
-        ? 'Coinciden: C es el borde de S con la orientación compatible, y Stokes se cumple.'
-        : 'No coinciden. O C no es el borde de S, o la orientación está invertida (probá cambiando t₁ por t₀), o la superficie no es la que creés.')
-   +'</div>';
+    '<div class="sgrow"><span>Área de S</span><b>'+f(area)+exactTag(area)+'</b></div>'
+   +'<div class="sgrow"><span>Flujo &nbsp;∬<sub>S</sub> F·n dS</span><b>'+f(flujo)+exactTag(flujo)+'</b></div>'
+   + (useCurve ? (
+       '<div class="sgline"></div>'
+      +'<div class="sgrow"><span>Stokes, lado superficie &nbsp;∬<sub>S</sub> (rot F)·n dS</span><b>'+f(fluxRot)+exactTag(fluxRot)+'</b></div>'
+      +'<div class="sgrow"><span>Stokes, lado curva &nbsp;∮<sub>C</sub> F·dr</span><b>'+f(circ)+exactTag(circ)+'</b></div>'
+      +'<div class="sgverdict '+(okStokes?'ok':'bad')+'">'
+        + (okStokes
+           ? 'Coinciden: C es el borde de S con la orientación compatible, y Stokes se cumple.'
+           : 'No coinciden. O C no es el borde de S, o la orientación está invertida (probá cambiando t₁ por t₀), o la superficie no es la que creés.')
+      +'</div>') : '');
   const note = document.getElementById('sgNote');
   note.textContent = 'La normal dibujada es n = r_u × r_v, en ese orden: si invertís u y v, se da vuelta y el flujo cambia de signo.';
 }
@@ -2047,6 +2704,175 @@ document.getElementById('btnSG').addEventListener('click', ()=>{
   try{ plotStokes(); }
   catch(e){ document.getElementById('sgNote').textContent = 'No se pudo dibujar: '+e.message; }
 });
+
+/* ============================================================
+   Unidad 4 — ejemplos de superficies, flujo, Stokes y Gauss.
+   Cada uno se carga en la pestaña «Stokes y Gauss».
+   ============================================================ */
+const EXAMPLES4 = [
+{ n:1, ref:'Ej. 4a', title:'Área del plano y+2z=2 dentro del cilindro x²+z²=1', tag:'área',
+  sg:{sx:'u*cos(v)', sy:'2-2*u*sin(v)', sz:'u*sin(v)', u0:'0', u1:'1', v0:'0', v1:'2*pi',
+      P:'0', Q:'0', R:'0', cx:'cos(t)', cy:'2-2*sin(t)', cz:'sin(t)', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:false, showT:false, showF:false},
+  steps:['El cilindro x²+z²=1 proyecta sobre el plano xz un disco de radio 1, así que conviene parametrizar por ahí: x=u cos v, z=u sen v con u∈[0,1].',
+         'El plano despeja y = 2−2z = 2−2u sen v. Con eso la superficie queda descrita por (u,v).',
+         'Como y es función de x y z, el factor de área es √(1+(∂y/∂x)²+(∂y/∂z)²) = √(1+0+4) = √5, constante.',
+         'Área = √5 · (área del disco) = √5 · π.'],
+  answerExact:'√5 π', answerNum:7.0248147 },
+
+{ n:2, ref:'Ej. 4b', title:'Área del cono z=2√(x²+y²) entre z=2 y z=6', tag:'área',
+  sg:{sx:'u*cos(v)', sy:'u*sin(v)', sz:'2*u', u0:'1', u1:'3', v0:'0', v1:'2*pi',
+      P:'0', Q:'0', R:'0', cx:'3*cos(t)', cy:'3*sin(t)', cz:'6', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:false, showT:false, showF:false},
+  steps:['Sobre el cono z=2r, los planos z=2 y z=6 recortan el anillo 1 ≤ r ≤ 3.',
+         'Parametrizando x=u cos v, y=u sen v, z=2u, el jacobiano de superficie da ‖r_u × r_v‖ = √5 · u.',
+         'Área = ∫₀^{2π}∫₁³ √5 u du dv = √5 · 2π · (9−1)/2 = 8√5 π.'],
+  answerExact:'8√5 π', answerNum:56.1985178 },
+
+{ n:3, ref:'Ej. 11', title:'Área del paraboloide z=4−x²−y² sobre el anillo 1≤x²+y²≤4', tag:'área',
+  sg:{sx:'u*cos(v)', sy:'u*sin(v)', sz:'4-u^2', u0:'1', u1:'2', v0:'0', v1:'2*pi',
+      P:'0', Q:'0', R:'0', cx:'2*cos(t)', cy:'2*sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:false, showT:false, showF:false},
+  steps:['Para z=f(x,y) el factor de área es √(f_x²+f_y²+1) = √(4x²+4y²+1) = √(1+4r²).',
+         'En polares el anillo es 1 ≤ r ≤ 2, así que Área = ∫₀^{2π}∫₁² √(1+4r²) · r dr dθ.',
+         'Con la sustitución w=1+4r², dw=8r dr, queda (2π/12)·[(1+4r²)^{3/2}]₁² = (π/6)(17^{3/2} − 5^{3/2}).'],
+  answerExact:'(π/6)(17³ᐟ² − 5³ᐟ²)', answerNum:30.8464897 },
+
+{ n:4, ref:'Ej. 8b', title:'Área del toro de revolución (R=2, r=1)', tag:'área',
+  sg:{sx:'(2+cos(u))*cos(v)', sy:'(2+cos(u))*sin(v)', sz:'sin(u)', u0:'0', u1:'2*pi', v0:'0', v1:'2*pi',
+      P:'0', Q:'0', R:'0', cx:'3*cos(t)', cy:'3*sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:false, showC:false, showT:false, showF:false},
+  steps:['Con r(u,v) = ((R+r cos u) cos v, (R+r cos u) sen v, r sen u), u recorre el círculo generador y v el giro alrededor del eje z.',
+         '‖r_u × r_v‖ = r (R + r cos u): el factor crece en la parte exterior del toro y decrece en la interior.',
+         'Área = ∫₀^{2π}∫₀^{2π} r(R + r cos u) du dv = 4π² R r. El término en cos u se cancela al integrar sobre la vuelta completa.',
+         'Con R=2 y r=1: A = 8π².'],
+  answerExact:'4π²Rr = 8π²', answerNum:78.9568352 },
+
+{ n:5, ref:'Ej. 15a', title:'Flujo de F=(x,y,z) por el cilindro x²+y²=1, 0≤z≤1', tag:'flujo',
+  sg:{sx:'cos(u)', sy:'sin(u)', sz:'v', u0:'0', u1:'2*pi', v0:'0', v1:'1',
+      P:'x', Q:'y', R:'z', cx:'cos(t)', cy:'sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:false, showT:false, showF:true},
+  steps:['Parametrizando con u=θ y v=z: r(u,v) = (cos u, sen u, v).',
+         'r_u × r_v = (cos u, sen u, 0): es la normal radial, que se aleja del eje z, justo la orientación pedida.',
+         'F·n = (cos u, sen u, v)·(cos u, sen u, 0) = 1 en todo punto: el campo atraviesa el manto perpendicularmente y con módulo 1.',
+         'Flujo = área lateral = 2π. El valor positivo dice que el flujo neto sale.'],
+  answerExact:'2π', answerNum:6.2831853 },
+
+{ n:6, ref:'Ej. 15b', title:'Flujo de F=(−y,x,0) por el mismo cilindro', tag:'flujo',
+  sg:{sx:'cos(u)', sy:'sin(u)', sz:'v', u0:'0', u1:'2*pi', v0:'0', v1:'1',
+      P:'-y', Q:'x', R:'0', cx:'cos(t)', cy:'sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:false, showT:false, showF:true},
+  steps:['Misma superficie y misma normal que el ejercicio anterior.',
+         'F·n = (−sen u, cos u, 0)·(cos u, sen u, 0) = −sen u cos u + cos u sen u = 0.',
+         'El campo es tangente al cilindro en cada punto: gira alrededor del eje sin atravesar nunca la pared.',
+         'Flujo = 0, y no por cancelación entre zonas: el integrando es idénticamente nulo.'],
+  answerExact:'0', answerNum:0 },
+
+{ n:7, ref:'Ej. 15d', title:'Flujo de F=(0,0,z) por la porción de esfera en el primer octante (a=1)', tag:'flujo',
+  sg:{sx:'sin(u)*cos(v)', sy:'sin(u)*sin(v)', sz:'cos(u)', u0:'0', u1:'pi/2', v0:'0', v1:'pi/2',
+      P:'0', Q:'0', R:'z', cx:'cos(t)', cy:'sin(t)', cz:'0', t0:'0', t1:'pi/2',
+      showS:true, showN:true, showC:false, showT:false, showF:true},
+  steps:['Con u=φ y v=θ, r_u × r_v = sen φ · (sen φ cos θ, sen φ sen θ, cos φ) = sen φ · r̂: ya apunta hacia afuera.',
+         'F·(r_u × r_v) = (0,0,cos φ)·sen φ (…, cos φ) = sen φ cos²φ.',
+         'Flujo = ∫₀^{π/2}∫₀^{π/2} sen φ cos²φ dφ dθ = (π/2)·(1/3) = π/6.',
+         'Para radio a general da πa³/6.'],
+  answerExact:'π/6', answerNum:0.5235988 },
+
+{ n:8, ref:'Ej. 19b', title:'Stokes: circulación de F=(2y,3x,−z²) por x²+y²=9', tag:'Stokes',
+  sg:{sx:'u*cos(v)', sy:'u*sin(v)', sz:'0', u0:'0', u1:'3', v0:'0', v1:'2*pi',
+      P:'2*y', Q:'3*x', R:'-z^2', cx:'3*cos(t)', cy:'3*sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:true, showT:true, showF:false},
+  steps:['rot F = (0, 0, ∂(3x)/∂x − ∂(2y)/∂y) = (0,0,1).',
+         'Como superficie sirve cualquiera que tenga a C por borde; la más simple es el disco z=0 de radio 3, con normal (0,0,1).',
+         '∬ rot F · n dσ = ∬ 1 dσ = área del disco = 9π.',
+         'La calculadora muestra los dos lados por separado: el flujo del rotor sobre el disco y la circulación sobre la curva. Deben coincidir.'],
+  answerExact:'9π', answerNum:28.2743339 },
+
+{ n:9, ref:'Ej. 21a', title:'Stokes: flujo del rotor de F=(2z,3x,5y) sobre el paraboloide z=4−r²', tag:'Stokes',
+  sg:{sx:'u*cos(v)', sy:'u*sin(v)', sz:'4-u^2', u0:'0', u1:'2', v0:'0', v1:'2*pi',
+      P:'2*z', Q:'3*x', R:'5*y', cx:'2*cos(t)', cy:'2*sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:true, showT:true, showF:false},
+  steps:['rot F = (5, 2, 3), constante.',
+         'El borde de la superficie es r=2, donde z = 4−4 = 0: la circunferencia de radio 2 en el plano xy.',
+         'Por Stokes conviene la circulación: sobre z=0 el campo se reduce a (0, 3x, 5y) y queda ∮ 3x dy = ∫₀^{2π} 12cos²t dt = 12π.',
+         'Hacerlo por la superficie exige el jacobiano r_u × r_v = (2u²cos v, 2u² sen v, u); el resultado es el mismo y por eso Stokes ahorra trabajo acá.'],
+  answerExact:'12π', answerNum:37.6991118 },
+
+{ n:10, ref:'Ej. 37', title:'Flujo del rotor de F=(y,−x,0) sobre la semiesfera x²+y²+z²=9, z≥0', tag:'Stokes',
+  sg:{sx:'3*sin(u)*cos(v)', sy:'3*sin(u)*sin(v)', sz:'3*cos(u)', u0:'0', u1:'pi/2', v0:'0', v1:'2*pi',
+      P:'y', Q:'-x', R:'0', cx:'3*cos(t)', cy:'3*sin(t)', cz:'0', t0:'0', t1:'2*pi',
+      showS:true, showN:true, showC:true, showT:true, showF:true},
+  steps:['rot F = (0, 0, −1−1) = (0,0,−2): el campo gira en sentido horario visto desde +z, por eso la componente es negativa.',
+         'El borde es la circunferencia de radio 3 en z=0. Sobre ella F·dr = −9 dt, y la circulación da −18π.',
+         'Por la superficie: sólo la componente z del rotor aporta, y su flujo equivale a −2 por el área proyectada sobre el plano xy, o sea −2·9π.',
+         'Los dos caminos dan −18π. El signo indica que la circulación va al revés de la orientación positiva inducida por la normal exterior.'],
+  answerExact:'−18π', answerNum:-56.5486678 },
+
+{ n:11, ref:'Ej. 29a', title:'Gauss: flujo de F=(y−x, z−y, y−x) por el cubo [−1,1]³', tag:'Gauss', noLoad:true,
+  steps:['div F = ∂(y−x)/∂x + ∂(z−y)/∂y + ∂(y−x)/∂z = −1 − 1 + 0 = −2, constante.',
+         'Por el teorema de la divergencia, el flujo saliente es −2 por el volumen del cubo.',
+         'El cubo de arista 2 tiene volumen 8, así que el flujo vale −16.',
+         'El signo negativo dice que entra más de lo que sale: el sólido se comporta como un sumidero neto.',
+         'No se carga en la pestaña de Stokes y Gauss porque la frontera del cubo son seis caras planas y no una sola superficie paramétrica.'],
+  answerExact:'−16', answerNum:-16 },
+
+{ n:12, ref:'Ej. 38a', title:'Gauss: flujo de F=(xy², yz, zx²) por el cilindro x²+y²≤4, 0≤z≤1', tag:'Gauss', noLoad:true,
+  steps:['div F = y² + z + x² = r² + z.',
+         'El teorema de la divergencia convierte el flujo por las tres caras (manto, tapa y base) en una sola integral triple.',
+         'En cilíndricas: ∫₀^{2π}∫₀²∫₀¹ (r² + z) r dz dr dθ = 2π ∫₀² (r³ + r/2) dr = 2π (4 + 1) = 10π.',
+         'Calcularlo cara por cara exige tres integrales de superficie con tres normales distintas; por eso conviene Gauss.',
+         'Tampoco se carga acá: la frontera del sólido son tres piezas, no una superficie paramétrica única.'],
+  answerExact:'10π', answerNum:31.4159265 }
+];
+
+function renderExamples4(){
+  const host = document.getElementById('exList4');
+  if(!host) return;
+  host.innerHTML = '';
+  EXAMPLES4.forEach(ex=>{
+    const card = document.createElement('div');
+    card.className = 'ex-card';
+    const steps = ex.steps.map(s=>`<li>${s}</li>`).join('');
+    const btn = ex.noLoad ? '' :
+      `<button class="loadbtn" data-load4="${ex.n}">Cargar en Stokes y Gauss →</button>`;
+    card.innerHTML = `
+      <div class="ex-head">
+        <div class="ex-num">${ex.n}</div>
+        <div class="ex-title"><span class="chip chip-cil">${ex.tag}</span> &nbsp;${ex.ref} — ${ex.title}</div>
+        <div class="ex-ans">≈ ${fmtNum(ex.answerNum)}</div>
+      </div>
+      <div class="ex-body">
+        <ol>${steps}</ol>
+        <div class="final">Resultado: <b>${ex.answerExact}</b> &nbsp;(≈ ${fmtNum(ex.answerNum)})</div>
+        ${btn}
+      </div>`;
+    card.querySelector('.ex-head').addEventListener('click', ()=> card.classList.toggle('open'));
+    host.appendChild(card);
+  });
+  host.querySelectorAll('[data-load4]').forEach(btn=>{
+    btn.addEventListener('click', (evt)=>{
+      evt.stopPropagation();
+      const ex = EXAMPLES4.find(e=>e.n===Number(btn.dataset.load4));
+      if(!ex || !ex.sg) return;
+      const g = ex.sg, set=(id,v)=>{ const el=document.getElementById(id); if(el) el.value=v; };
+      set('sSx',g.sx); set('sSy',g.sy); set('sSz',g.sz);
+      set('sU0',g.u0); set('sU1',g.u1); set('sV0',g.v0); set('sV1',g.v1);
+      set('sCx',g.cx); set('sCy',g.cy); set('sCz',g.cz); set('sT0',g.t0); set('sT1',g.t1);
+      set('sP',g.P); set('sQ',g.Q); set('sR',g.R);
+      const chk=(id,v)=>{ const el=document.getElementById(id); if(el) el.checked=v; };
+      chk('sShowS',g.showS); chk('sShowN',g.showN); chk('sShowC',g.showC);
+      chk('sShowT',g.showT); chk('sShowF',g.showF);
+      document.querySelector('nav.tabs button[data-tab="surfaces"]').click();
+      try{ plotStokes(); }
+      catch(e){ document.getElementById('sgNote').textContent = 'No se pudo dibujar: '+e.message; }
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+}
+
+(function(){ const c=document.getElementById('u4count');
+  if(c) c.textContent = EXAMPLES4.length + ' ejemplos'; })();
+renderExamples4();
 
 </script>
 </body>

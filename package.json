@@ -1,0 +1,15 @@
+{
+  "name": "calculadora-integrales-am2",
+  "version": "1.0.0",
+  "description": "Calculadora y visualizador de integrales multiples, campos vectoriales y teoremas de Stokes y Gauss — Analisis Matematico II, UNCUYO",
+  "private": true,
+  "scripts": {
+    "test": "node test/run.js",
+    "serve": "python3 -m http.server 8080",
+    "verify": "python3 tools/verify-scipy.py"
+  },
+  "devDependencies": {
+    "jsdom": "^30.1.2",
+    "canvas": "^3.2.3"
+  }
+}

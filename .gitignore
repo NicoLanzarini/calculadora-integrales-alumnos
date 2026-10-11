@@ -1,2 +1,7 @@
 calculadora-integrales-alumnos.html
 calculadora-integrales-CON-practica.html
+node_modules/
+package-lock.json
+*.png
+*.log
+.DS_Store
