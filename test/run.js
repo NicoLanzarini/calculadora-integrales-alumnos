@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /* Corre todas las suites. Sale con codigo 1 si algo falla. */
-const suites = { engine: './engine', u4: './u4', ui: './ui' };
+const suites = { engine: './engine', u4: './u4', ui: './ui', ejes: './ejes' };
 const pedido = process.argv[2];
 let pasaron = 0, fallaron = 0;
 const fallos = [];

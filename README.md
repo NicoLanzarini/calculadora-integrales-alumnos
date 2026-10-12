@@ -30,7 +30,7 @@ Doble clic en `index.html`. No necesita servidor, instalación ni conexión.
 
 ```bash
 npm install     # jsdom y canvas, solo para los tests
-npm test        # 115 comprobaciones
+npm test        # 168 comprobaciones
 npm run serve   # http://localhost:8080
 npm run verify  # recalcula las referencias con scipy (requiere scipy)
 ```

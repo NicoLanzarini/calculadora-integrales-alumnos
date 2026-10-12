@@ -1712,8 +1712,10 @@ function drawScene(hostOpt){
       if(pr.shade){ ctx.strokeStyle = rgba(col,0.55); ctx.lineWidth=0.35; ctx.stroke(); }
     }});
   }
+  items.push(...originAxisItems(ctx, box, toPx));
   items.sort((a,b)=>b.d-a.d);          /* pintor: lo lejano primero */
   for(const it of items) it.draw();
+  drawAxes(ctx, box, toPx, w, hDraw);
   drawLegend(ctx, box, w, h);
 }
 
@@ -1778,17 +1780,17 @@ function drawLegend(ctx, box, w, h){
 
   /* triedro: los mismos ángulos de cámara, dibujado en la esquina */
   const ox=w-44, oy=44, R=20;
-  const cy=Math.cos(VIEW.yaw), sy=Math.sin(VIEW.yaw), cp=Math.cos(VIEW.pitch), sp=Math.sin(VIEW.pitch);
-  const dir = (vx,vy,vz)=>{ const x1=vx*cy-vy*sy, y1=vx*sy+vy*cy, z1=vz;
-    return { x: ox + x1*R, y: oy - (z1*cp + y1*sp)*R }; };
+  /* la misma proyección que la escena, con la caja unitaria centrada en el origen */
+  const unit = {cx:0, cy:0, cz:0, s:1};
+  const dir = (vx,vy,vz)=>{ const q = project([vx,vy,vz], unit);
+    return { x: ox + q.sx*R, y: oy - q.sy*R }; };
   /* un color por eje: a este tamaño (20px) x e y suelen quedar a pocos
      grados entre sí y el color es lo que realmente los distingue */
-  const AXCOL = { x: hex2rgb(cssVar('--rect')), y: hex2rgb(cssVar('--warm')), z: hex2rgb(cssVar('--ink')) };
   const axes=[[1,0,0,'x'],[0,1,0,'y'],[0,0,1,'z']];
   ctx.lineWidth=1.6; ctx.textAlign='center'; ctx.font='bold 11px "IBM Plex Mono", monospace';
   for(const a of axes){
     const q=dir(a[0],a[1],a[2]);
-    const col = AXCOL[a[3]];
+    const col = axisColor(a[3]);
     ctx.strokeStyle = rgba(col, 0.95);
     ctx.beginPath(); ctx.moveTo(ox,oy); ctx.lineTo(q.x,q.y); ctx.stroke();
     ctx.fillStyle = rgba(col, 1);
@@ -1796,6 +1798,139 @@ function drawLegend(ctx, box, w, h){
     ctx.fillText(a[3], ox+(q.x-ox)*1.38, oy+(q.y-oy)*1.38+3.5);
   }
   ctx.textAlign='left'; ctx.font='10.5px "IBM Plex Mono", monospace';
+}
+
+/* color por eje: el mismo en el triedro y en las marcas */
+function axisColor(k){
+  return hex2rgb(cssVar(k==='x' ? '--rect' : k==='y' ? '--warm' : '--ink'));
+}
+
+/* ---------- ejes con marcas y letra ----------
+   R²: sobre el marco (x abajo, y a la izquierda). 3D: una arista por eje: x e y las
+   de menor altura en pantalla; z la vertical más lejana. La letra va en el punto
+   medio de su arista, afuera. Las marcas llevan su valor y el color del eje.
+   Todo se acota al área de dibujo (por encima de la leyenda) y un texto se omite
+   si pisa otro ya dibujado; las letras tienen prioridad y, si no entran en su
+   lugar, se alejan. Los ejes tenues por el origen van en el pintor (originAxisItems). */
+function niceStep(span){
+  const raw = span/5, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw/p;
+  return (m<=1 ? 1 : m<=2 ? 2 : m<=5 ? 5 : 10) * p;
+}
+/* marcas de un eje: valores "redondos" dentro de [lo,hi] y su formato.
+   Devuelve null si el rango es nulo (una superficie plana no tiene escala en z). */
+function tickScale(lo, hi){
+  if(!(hi-lo > 1e-12)) return null;
+  const st = niceStep(hi-lo), dec = Math.max(0, -Math.floor(Math.log10(st)));
+  const k0 = Math.ceil(lo/st - 1e-9), n = Math.floor(hi/st + 1e-9) - k0;
+  if(!(n >= 0 && n < 50)) return null;           /* paso absurdo para el rango: sin marcas */
+  const vals = [];
+  for(let i=0; i<=n; i++) vals.push((k0+i)*st);
+  return { vals, label: v => Math.abs(v) < st*1e-6 ? '0' : v.toFixed(dec) };
+}
+/* punto con coordenada k = t y las otras dos fijas en a y b (en el orden x,y,z) */
+function axisPt(k, t, a, b){
+  const i = k==='x' ? 0 : k==='y' ? 1 : 2, p = [0,0,0], o = [0,1,2].filter(j => j !== i);
+  p[i] = t; p[o[0]] = a; p[o[1]] = b;
+  return p;
+}
+/* ejes tenues por el origen: el eje k cruza la caja si las otras dos coordenadas
+   contienen el 0 (igual que en R², donde drawFrame decide lo mismo). Van en la
+   lista del pintor, así quedan detrás de lo que está delante. */
+function originAxisItems(ctx, box, toPx){
+  const rng = { x:[box.x0,box.x1], y:[box.y0,box.y1], z:[box.z0,box.z1] };
+  const out = [];
+  for(const k of ['x','y','z']){
+    const others = ['x','y','z'].filter(j => j !== k);
+    if(!others.every(j => rng[j][0] < 0 && rng[j][1] > 0)) continue;
+    const A = toPx(axisPt(k, rng[k][0], 0, 0)), B = toPx(axisPt(k, rng[k][1], 0, 0));
+    out.push({ d:(A.d+B.d)/2, draw:() => {
+      ctx.strokeStyle = rgba(hex2rgb(cssVar('--ink-dim')), 0.55); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(A.x,A.y); ctx.lineTo(B.x,B.y); ctx.stroke();
+    }});
+  }
+  return out;
+}
+
+function drawAxes(ctx, box, toPx, w, hDraw){
+  const TICK_FONT = '9.5px "IBM Plex Mono", monospace', LET_FONT = 'bold 11px "IBM Plex Mono", monospace';
+  const flat = !!(SCENE && SCENE.flat);
+  const rng = { x:[box.x0,box.x1], y:[box.y0,box.y1], z:[box.z0,box.z1] };
+  const PAD = 8, placed = [];
+  ctx.textBaseline = 'middle'; ctx.textAlign = 'center';
+
+  /* rectángulo que ocupa un texto con el alineado vigente (fuente ya puesta) */
+  const rectOf = (t, x, y) => {
+    const tw = ctx.measureText(t).width, th = 11;
+    const l = ctx.textAlign==='center' ? x-tw/2 : ctx.textAlign==='right' ? x-tw : x;
+    const tp = ctx.textBaseline==='middle' ? y-th/2 : ctx.textBaseline==='bottom' ? y-th : y;
+    return { l, r:l+tw, t:tp, b:tp+th };
+  };
+  /* dibuja un texto acotado al área y, si no entra sin pisar, lo omite (salvo force) */
+  const put = (t, x, y, col, font, align, base, force) => {
+    ctx.font = font; ctx.textAlign = align; ctx.textBaseline = base; ctx.fillStyle = col;
+    const p = { x: Math.min(w-PAD, Math.max(PAD, x)), y: Math.min(hDraw-PAD, Math.max(PAD, y)) };
+    const R = rectOf(t, p.x, p.y);
+    const libre = placed.every(q => !(R.l < q.r+1 && q.l < R.r+1 && R.t < q.b+1 && q.t < R.b+1));
+    if(!force && !libre) return false;
+    placed.push(R); ctx.fillText(t, p.x, p.y); return true;
+  };
+  const tickMark = (x0, y0, x1, y1) => {
+    ctx.strokeStyle = rgba(hex2rgb(cssVar('--ink-dim')), 0.9); ctx.lineWidth = 0.9;
+    ctx.beginPath(); ctx.moveTo(x0,y0); ctx.lineTo(x1,y1); ctx.stroke();
+  };
+
+  if(flat){
+    const R = toPx([box.x1, box.y0, 0]), T = toPx([box.x0, box.y1, 0]);
+    const tx = tickScale(box.x0, box.x1), ty = tickScale(box.y0, box.y1);
+    put('x', R.x+12, R.y+4, rgba(axisColor('x'),1), LET_FONT, 'left', 'middle', true);
+    put('y', T.x, T.y-9, rgba(axisColor('y'),1), LET_FONT, 'center', 'bottom', true);
+    if(tx) for(const v of tx.vals){
+      const P = toPx([v, box.y0, 0]);
+      if(put(tx.label(v), P.x, P.y+7, rgba(axisColor('x'),0.95), TICK_FONT, 'center', 'top', false))
+        tickMark(P.x, P.y, P.x, P.y+5);
+    }
+    if(ty) for(const v of ty.vals){
+      const P = toPx([box.x0, v, 0]);
+      if(put(ty.label(v), P.x-7, P.y, rgba(axisColor('y'),0.95), TICK_FONT, 'right', 'middle', false))
+        tickMark(P.x, P.y, P.x-5, P.y);
+    }
+    ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    return;
+  }
+
+  /* 3D: una arista por eje */
+  const C = toPx([(box.x0+box.x1)/2, (box.y0+box.y1)/2, (box.z0+box.z1)/2]);
+  const edgeOf = (k, score) => {
+    const o = ['x','y','z'].filter(j => j !== k); let best = null;
+    for(const a of rng[o[0]]) for(const b of rng[o[1]]){
+      const M = toPx(axisPt(k, (rng[k][0]+rng[k][1])/2, a, b)), sc = score(M);
+      if(!best || sc > best.s) best = { a, b, s:sc, M };
+    }
+    return best;
+  };
+  const AE = { x: edgeOf('x', M => M.y), y: edgeOf('y', M => M.y), z: edgeOf('z', M => M.d) };
+  /* hacia afuera de la caja; si la arista cae justo sobre el centro, hacia arriba */
+  const dirOf = e => { const dx=e.M.x-C.x, dy=e.M.y-C.y, L=Math.hypot(dx,dy);
+    return L < 1e-6 ? [0,1] : [dx/L, dy/L]; };
+
+  /* letras primero: se alejan de la arista hasta quedar libres */
+  for(const k of ['x','y','z']){
+    if(!tickScale(rng[k][0], rng[k][1])) continue;           /* eje sin rango: sin letra */
+    const E = AE[k], [ux,uy] = dirOf(E), col = rgba(axisColor(k), 1);
+    if(![28,40,52].some(off => put(k, E.M.x+off*ux, E.M.y+off*uy, col, LET_FONT, 'center', 'middle', false)))
+      put(k, E.M.x+28*ux, E.M.y+28*uy, col, LET_FONT, 'center', 'middle', true);
+  }
+  for(const k of ['x','y','z']){
+    const ts = tickScale(rng[k][0], rng[k][1]);
+    if(!ts) continue;
+    const E = AE[k], [ux,uy] = dirOf(E);
+    for(const v of ts.vals){
+      const P = toPx(axisPt(k, v, E.a, E.b));
+      if(put(ts.label(v), P.x+13*ux, P.y+13*uy, rgba(axisColor(k),0.95), TICK_FONT, 'center', 'middle', false))
+        tickMark(P.x, P.y, P.x+6*ux, P.y+6*uy);
+    }
+  }
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
 }
 
 document.querySelectorAll('.vizctl [data-view]').forEach(b=>{
@@ -2256,9 +2391,11 @@ function plotField(){
     ? { x0:L0,x1:L1, y0:L0,y1:L1, z0:0,z1:0, cx:(L0+L1)/2, cy:(L0+L1)/2, cz:0, s:span/2 }
     : buildBox([L0,L1],[L0,L1],[L0,L1]);
 
+  /* la cámara se decide por la escena ANTERIOR de este panel (no por la activa):
+     si venía de R², vuelve a la isométrica; si venía de 3D, conserva lo que el alumno rotó */
   const VF = viewFor('plotField');
-  if(cfg.dim===2){ VF.yaw=0; VF.pitch=Math.PI/2; }
-  else if(SCENE && SCENE.flat){ VIEW.yaw=-2.0; VIEW.pitch=0.38; }
+  if(cfg.dim===2){ VF.yaw=0; VF.pitch=Math.PI/2; VF.zoom=1; }
+  else resetViewIfFlat('plotField');
 
   setScene({ prims, box, kind:'field', host:'plotField', flat:cfg.dim===2,
             scale: COLOR_SCALE ? {lo:mLo, hi:mHi, label:'|F|'} : null,

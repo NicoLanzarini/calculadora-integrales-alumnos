@@ -12,11 +12,11 @@ Se abre con doble clic y funciona sin conexión.
 
 ```bash
 npm install          # jsdom + canvas (solo para los tests)
-npm test             # 115 comprobaciones; debe terminar en verde
+npm test             # 168 comprobaciones; debe terminar en verde
 ```
 
 `npm test` es la red de seguridad. Si lo rompés, el motor numérico o la interfaz
-están mal. Correr una suite sola: `npm test engine | u4 | ui`.
+están mal. Correr una suite sola: `npm test engine | u4 | ui | ejes`.
 
 ---
 
@@ -57,6 +57,12 @@ están mal. Correr una suite sola: `npm test engine | u4 | ui`.
 8. **Las formas exactas se reconocen con tolerancia 1e-8.** Medido: 1e-7 reconoce
    uno más pero sube los falsos positivos de 0,04 % a 0,58 %; 1e-6 llega al 5 %.
    No aflojar el umbral sin volver a medir.
+
+9. **Los ejes se prueban, no se miran.** `test/ejes.js` exige que la base imagen
+   (derecha, arriba, hacia el observador) tenga determinante +1 en cualquier
+   cámara, y que cada eje del triedro y las flechas de los campos apunten donde
+   apunta la proyección. Invertir el signo de `depth` rompe esa prueba; invertir `sx` o
+   `sy` también. Si cambiás la proyección, corré `npm test ejes` antes que nada.
 
 ---
 
@@ -113,6 +119,10 @@ ordena por profundidad y las dibuja de lejos a cerca.
   muestrear, pesá por el jacobiano.
 - **Reimplementar algo que ya está.** Pasó dos veces (secciones por unidad,
   "cilíndricas"). Buscá en el archivo antes de agregar.
+- **Letras de eje en la misma punta**: con la isométrica, las aristas de x e y
+  comparten la esquina delantera; si las letras van en el extremo de cada arista,
+  quedan una encima de la otra. `drawAxes` las pone en el punto medio de cada
+  arista y omite una marca que pise otra. No volver a ponerlas en los extremos.
 - **Más flechas no es mejor**: a 27×27 el campo 2D se vuelve ilegible. Tope ~21.
 
 ---
